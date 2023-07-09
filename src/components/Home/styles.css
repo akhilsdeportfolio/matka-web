@@ -1,0 +1,10 @@
+.adm-dropdown-item {
+    justify-content: flex-start;
+  }
+  
+  .adm-dropdown-item .adm-dropdown-item-title {
+    font-size: 22px;    
+    flex-direction: row-reverse;
+     gap: 5px; 
+  }
+  
