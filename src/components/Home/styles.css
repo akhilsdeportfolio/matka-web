@@ -3,7 +3,7 @@
   }
   
   .adm-dropdown-item .adm-dropdown-item-title {
-    font-size: 22px;    
+    font-size: 16px;        
     flex-direction: row-reverse;
      gap: 5px; 
   }

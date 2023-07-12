@@ -1,0 +1,15 @@
+.adm-list-default .adm-list-body{
+    border:0;
+}
+
+.adm-form-item-child{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.adm-form-item-feedback-error{
+    text-align: center;
+}
+
+

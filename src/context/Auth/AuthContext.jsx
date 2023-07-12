@@ -1,8 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../../clientFirebase";
+import { analytics, auth } from "../../clientFirebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { userFound } from "../../features/users";
+import { setUserId, setUserProperties } from "firebase/analytics";
+
 
 export const AuthContext = createContext();
 
@@ -28,6 +30,13 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
+
+      if(user)
+      {
+        setUserId(analytics,user.uid);
+        setUserProperties(analytics,{...user})
+      }
+      
       dispatch(userFound(user));
       setCurrentUser(user);
       setIsLoading(false);

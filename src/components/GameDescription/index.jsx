@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/no-unescaped-entities */
 const winnings = [
   { name: "ank", factor: 90, digits: 1 },
@@ -17,7 +18,7 @@ export default function GameDescription({ type }) {
         className={`mb-2 text-xs font-bold text-center`}
         style={{ color: "var(--adm-color-weak)" }}
       >
-        Choose {game.digits} Digit's and win {game.factor / 10}X your bet
+        Choose {game.digits} Digit's and win {game.factor }X your bet
       </p>
       <p
         className={`mb-2 text-xs text-center`}

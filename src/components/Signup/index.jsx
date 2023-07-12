@@ -1,56 +1,70 @@
-import { List, Switch } from "antd-mobile";
-import {
-  UnorderedListOutline,
-  PayCircleOutline,
-  SetOutline,
-} from "antd-mobile-icons";
-import { useAuth } from "../../context/Auth/AuthContext";
+import { useState } from 'react'
+import './index.css';
+import { Button, Card, Form, Input, NoticeBar } from 'antd-mobile';
+import { createUserWithEmailAndPassword} from 'firebase/auth';
+import { auth } from '../../clientFirebase';
+import { Link, useNavigate } from 'react-router-dom';
+import { TbLockAccess } from 'react-icons/tb';
+import { useAddPhoneNumberToUserMutation } from '../../features/api/apiSlice';
 
-export default function Signup(){
-  const {logOut}=useAuth();
+
+export default function SignUp() {
+    const [email,setEmail]=useState("");
+    const [phone,setPhone]=useState("");
+    const [password,setPassword]=useState("");
+    const [error,setError]=useState(null);
+    const [loading,setLoading]=useState(false);
+    const navigate=useNavigate();
+    const [form]=Form.useForm();
+    const [callAddPhoneNumber,]=useAddPhoneNumberToUserMutation();
+    async function handleSignup(data)
+    {        
+        setLoading(true)
+        try{
+        await createUserWithEmailAndPassword(auth,email,password);
+        setLoading(false);
+        callAddPhoneNumber(data)
+        navigate('/',{replace:true});
+        }
+        catch(e)
+        {
+            setLoading(false);            
+            console.log(e)
+            setError({error:e});
+        }
+    }
+
+
+
   return (
-    <>
-      <List header="基础用法">
-        <List.Item>1</List.Item>
-        <List.Item>2</List.Item>
-        <List.Item>3</List.Item>
-      </List>
-
-      <List header="可点击列表">
-        <List.Item prefix={<UnorderedListOutline />} onClick={() => {}}>
-          账单
-        </List.Item>
-        <List.Item prefix={<PayCircleOutline />} onClick={() => {}}>
-          总资产
-        </List.Item>
-        <List.Item prefix={<SetOutline />} onClick={() => {}}>
-          设置
-        </List.Item>
-      </List>
-
-      <List header="复杂列表">
-        <List.Item extra={<Switch onChange={()=>{
-          logOut();
-        }} defaultChecked />}>新消息通知</List.Item>
-        <List.Item extra="未开启" clickable>
-          大字号模式
-        </List.Item>
-        <List.Item description="管理已授权的产品和设备" clickable>
-          授权管理
-        </List.Item>
-        <List.Item title="副标题信息A" description="副标题信息B" clickable>
-          这里是主信息
-        </List.Item>
-      </List>
-
-      <List header="禁用状态">
-        <List.Item disabled clickable prefix={<UnorderedListOutline />}>
-          账单
-        </List.Item>
-        <List.Item disabled prefix={<PayCircleOutline />}>
-          总资产
-        </List.Item>
-      </List>
-    </>
-  );
+    <div className='loginContainer' >
+      <Card style={{padding:20}} className='drop-shadow-xl border-2 border-blue-300'>    
+        <img src='/logo.png' width="160" height="100" style={{margin:'auto'}} />
+        <p className='text-xl mb-2 mt-4'>Create New Account</p>        
+        <Form form={form} onFinish={handleSignup}>
+        <Form.Item label="Email Address" name="email" rules={[{required:true,message:"enter email address"},{type:'email',message:"Pleas enter a valid email address"}]}>
+        <Input className="bg-slate-100  p-2 border border-blue-200 rounded-md"   placeholder='Enter Email Address' value={email} onChange={(e)=>setEmail(e)}/>
+        </Form.Item>
+        <Form.Item label="Mobile Number" name="mobile" rules={[{required:true,message:"enter mobile number"},{min:10,message:"Pleas enter a valid mobile number"}]}>
+        <Input className="bg-slate-100  p-2 border border-blue-200 rounded-md"   placeholder='Enter Mobile Number' value={phone} onChange={(e)=>setPhone(e)}/>
+        </Form.Item>
+        <Form.Item label="Password" name="password" rules={[{required:true,message:"enter password"}]}>
+        <Input className="bg-slate-100 p-2 border border-blue-200 rounded-md"   placeholder='Enter Password' type='password' value={password} onChange={(e)=>setPassword(e)}/>
+        </Form.Item>
+        {error &&   <NoticeBar    
+        style={{"--background-color":'transparant',"--border-color":"transparant","--text-color":"red",paddingLeft:'20%'}}        
+            icon={<TbLockAccess />}
+            content={error.error.code}
+            color='error'
+          />}
+        <Button className='font-bold mt-2'   loading={loading} loadingText='Finding User' onClick={()=>{form.submit()}} color='primary' fill='outline' size='default' type='ghost'>Create Account</Button>  
+        </Form>
+        <div className='p-2'>
+        <Link to={"/login"} className='text-slate-600 font-bold'>Already have account yet ?<span className='text-blue-400'> login here</span>  </Link>        
+        </div>      
+        
+        </Card>
+    </div>
+    
+  )
 }

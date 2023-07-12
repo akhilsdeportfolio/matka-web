@@ -10,15 +10,17 @@ import axios from "axios";
 import { userFound } from "../../features/users";
 import {
   useGetAllGamesQuery,
-  useGetUserDataByIdQuery,
 } from "../../features/api/apiSlice";
 import { useAuth } from "../../context/Auth/AuthContext";
 import Betline from "../BetLine";
 import shortid from "shortid";
-import { apiUrl } from "../../const";
+import { apiUrl, linesKey } from "../../const";
 import "./styles.css";
 import BottomBar from "../BottomBar";
 import { useNavigate } from "react-router-dom";
+import { analytics, auth } from "../../clientFirebase";
+import { logEvent } from "firebase/analytics";
+import { getAmount } from "../../utils/money";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -29,36 +31,26 @@ export default function Home() {
   const [value, setValue] = useState("");
   const ref = useRef();
   const navigate=useNavigate();
-
-  const { logOut } = useAuth();
-  const { data } = useGetAllGamesQuery();
-
-  const { data: userAccountData, isLoading } = useGetUserDataByIdQuery(
-    userObject.uid
-  );
+  
   
 
-  useEffect(() => {
-    if (!isLoading) {
-      dispatch(userFound({ ...userObject, serverData: userAccountData }));
-    }
-  }, [isLoading]);
+  
 
-  useEffect(()=>{
-      if(localStorage.getItem("betlines"))
-      {
-        const data=localStorage.getItem("betlines");
-        console.log("Data",data)
-        dispatch(addBetLines({lines:JSON.parse(data)}))
-      }
+  useEffect(()=>{    
+    if(localStorage.getItem(linesKey))
+      dispatch(addBetLines({lines:JSON.parse(localStorage.getItem(linesKey))}))
   },[])
 
 
   useEffect(()=>{
     if(lines.length)
-      localStorage.setItem("betlines",JSON.stringify(lines));
+    localStorage.setItem(linesKey,JSON.stringify(lines));
   },[lines]);
+  
 
+
+
+  
 
 
   function updateSelected(value) {
@@ -69,7 +61,7 @@ export default function Home() {
             name: value,
             stake: 100,
             ank: [""],
-            drawType: "both",
+            drawType: "open",
             id: shortid.generate(),
             isValid: false,
           })
@@ -92,7 +84,7 @@ export default function Home() {
             name: value,
             stake: 100,
             numbers: [],
-            drawType: "both",
+            drawType: "open",
             id: shortid.generate(),
             isValid: false,
           })
@@ -104,7 +96,7 @@ export default function Home() {
             name: value,
             stake: 100,
             numbers: [],
-            drawType: "both",
+            drawType: "open",
             id: shortid.generate(),
             isValid: false,
           })
@@ -116,7 +108,7 @@ export default function Home() {
             name: value,
             stake: 100,
             numbers: [],
-            drawType: "both",
+            drawType: "open",
             id: shortid.generate(),
             isValid: false,
           })
@@ -128,7 +120,7 @@ export default function Home() {
             name: value,
             stake: 100,
             numbers:[],
-            drawType: "both",
+            drawType: "",
             id: shortid.generate(),
             isValid: false,
           })
@@ -149,74 +141,25 @@ export default function Home() {
     }
   }
 
-  async function handlePayment() {
-    setLoading(true);
+
+   function handlePickDraw()
+   {
+      logEvent(analytics,"add_to_cart",{amount:getAmount(lines),totalBets:lines?.length})
+      navigate('/select-game')
+   }  
+
+   function handleQuickDraw()
+   {
+      // get the next avialable game and place the bet 
+      
+   }
 
   
-    try {
-      const config = {
-        headers: {
-          token: userObject.accessToken,
-        },
-      };
 
-      const resp = await axios.post(
-        apiUrl + "/payments/init",
-        { amount: lines.reduce((ac, el) => ac + Number(el.stake), 0) * 100 },
-        config
-      );
 
-      var options = {
-        key: "rzp_test_WAL4lJiNcSdqGK", // Enter the Key ID generated from the Dashboard
-        amount: resp.data.data.paymentInfo.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-        currency: "INR",
-        order_id: resp.data.data.paymentInfo.id, //This is a sample Order ID. Pass the `id` obtained in the response of createOrder().
-        handler: async function (response) {
-          setLoading(false);
-          const onUpdated = await axios.post(
-            apiUrl +
-              `/payments/onSuccesfulTransaction/${resp.data.data._id}/${userObject.uid}`,
-            { ...response }
-          );
 
-          dispatch(
-            userFound({
-              ...userObject,
-              balance: Math.floor(
-                onUpdated.data?.updatedUserData.balance / 100
-              ),
-            })
-          );
-        },
-        prefill: {
-          name: "Piyush Garg",
-          email: "youremail@example.com",
-          contact: "9999999999",
-        },
-        notes: {
-          address: "Razorpay Corporate Office",
-        },
-        theme: {
-          color: "gold",
-        },
-      };
-
-      const rzp1 = new Razorpay(options);
-
-      rzp1.on("payment.failed", function (response) {
-        console.log("failed", response);
-        setLoading(false);
-      });
-
-      rzp1.open();
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-    }
-  }
-  const user = useSelector((store) => store.user);
   return (
-    <div style={{ padding: 0, minHeight: "80%" }}>
+    <div style={{ padding: 0}}>
       {/*   <p>{ userObject.balance || userObject?.serverData?.userData?.balance/100}</p> */}
       <div
         style={{
@@ -228,7 +171,7 @@ export default function Home() {
         <Dropdown
           arrow={
             <AddCircleOutline
-              fontSize={24}
+              fontSize={16}
               style={{ color: "var(--adm-color-primary)" }}
             />
           }
@@ -239,8 +182,7 @@ export default function Home() {
               <Radio.Group
                 value={value}
                 onChange={(value) => {
-                  setValue(value.toString());
-                
+                  setValue(value.toString());                
                   ref.current.close();
                   updateSelected(value);
                   setValue("");
@@ -285,14 +227,15 @@ export default function Home() {
               key={index}
               name={el.name}
               index={index}
-              id={el.id}
-              drawType={el.drawType}
-              stake={el.stake}
-              ank={el.ank}
+              id={el?.id}
+              drawType={el?.drawType}
+              stake={el?.stake}
+              ank={el?.ank}
               jodi={el?.jodi}              
               numbers={el?.numbers}
               openNumbers={el?.openNumbers}
               closeNumbers={el?.closeNumbers}
+              isValid={el?.isValid}
             />
           );
         })}
@@ -308,10 +251,12 @@ export default function Home() {
           </div>
         );
       })} */}
-      <BottomBar
-        primary={handlePayment}
-        secondary={handlePayment}
+      <BottomBar        
+        primary={handlePickDraw}
+        secondary={handleQuickDraw}
         isLoading={loading}
+        primaryText="Pick Draw"
+        secondaryText="Quick Draw"
       />
     </div>
   );

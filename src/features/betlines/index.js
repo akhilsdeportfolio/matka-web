@@ -15,7 +15,50 @@ const betlinesSlice = createSlice({
       /* const {userId,token} = action.payload
        */ // "Mutating" update syntax thanks to Immer, and no `return` needed
       state.unshift(action.payload);
-    },
+    }
+    ,
+    validate(state,action)
+    {
+        const {id}=action.payload;
+        const mapped = state.map((el)=>{
+
+            if(el.id===id)
+            {
+              if(el.name==="ank" && el.ank.length===1)
+                return {...el,isValid:true}                
+
+              if(el.name==="jodi" && el.jodi.length===2)              
+                return {...el,isValid:true}
+              
+              if(el.name==="single-panna" && el.numbers.length===3)
+                return {...el,isValid:true}
+
+              if(el.name==="double-panna" && el.numbers.length===3)
+                return {...el,isValid:true}
+
+              if(el.name==="triple-panna" && el.numbers.length===3)
+                return {...el,isValid:true}
+
+              if(el.name==="half-sangam" && el.numbers.length===3)
+                return {...el,isValid:true}
+
+
+              if(el.name==="full-sangam" && el.openNumbers.length===3 && el.closeNumbers.length===3)
+                return {...el,isValid:true}
+          
+              return el;
+            }
+            else
+              return el;
+
+
+        });
+
+        return mapped;
+
+
+    }
+    ,
     removeBetLine(state, action) {
       const { id } = action.payload;
       const filtered = state?.filter((betline) => {
@@ -25,16 +68,16 @@ const betlinesSlice = createSlice({
       return filtered;
     },
     updateValue(state, action) {
-      const { updateKey, updateValue, id } = action.payload;
+      const { updateKey, updateValue, id ,isValid=false} = action.payload;
       const betlines = state?.map((betLine) => {
         if (betLine.id === id) {
           if (name === "ank" || name === "jodi")
             return { ...betLine, [updateKey]: updateValue };
           else if(name==='full-sangam')
           {
-            return {...betLine,[updateKey]:updateValue}
+            return {...betLine,[updateKey]:updateValue,isValid:isValid}
           }
-          else return { ...betLine, [updateKey]: updateValue.split("") };
+          else return { ...betLine, [updateKey]: updateValue.split(""),isValid:isValid};
         } else return betLine;
       });
 
@@ -72,7 +115,8 @@ export const {
   updateStake,
   updateDrawType,
   updateValue,
-  addBetLines
+  addBetLines,
+  validate
 } = betlinesSlice.actions;
 
 // Export the slice reducer as the default export

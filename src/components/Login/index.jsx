@@ -1,17 +1,20 @@
 import { useState } from 'react'
 import './index.css';
-import { Button, Card, Input } from 'antd-mobile';
+import { Button, Card, Form, Input, NoticeBar } from 'antd-mobile';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../clientFirebase';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Label } from '../Label';
+import { TbLockAccess } from 'react-icons/tb';
 
 
 export default function Login() {
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
-    const [,setError]=useState({});
+    const [error,setError]=useState(null);
     const [loading,setLoading]=useState(false);
     const navigate=useNavigate();
+    const [form]=Form.useForm();
 
     async function handleLogin()
     {        
@@ -19,12 +22,13 @@ export default function Login() {
         try{
         await signInWithEmailAndPassword(auth,email,password);
         setLoading(false);
-        navigate('/');
+        navigate('/',{replace:true});
         }
         catch(e)
         {
             setLoading(false);
-            console.log('Something went wrong',e)
+            
+            console.log(e)
             setError({error:e});
         }
     }
@@ -32,15 +36,33 @@ export default function Login() {
 
 
   return (
-    <Card style={{padding:20}}>
-    <div className='loginContainer'>
-        
-        <p className='text-lg mb-2'>Welcome to Rich Matka</p>
+    <div className='loginContainer' >
+      <Card style={{padding:20}} className='drop-shadow-xl border-2 border-blue-300'>    
+        <img src='logo.png' width="160" height="100" style={{margin:'auto'}} />
+        <p className='text-xl mb-2 mt-4'>Authorization Required</p>
         <p className='text-default mb-2'>Please Login to continue</p>
-        <Input className='mb-4'  style={{border:'1px solid black',padding:10,borderRadius:5}} placeholder='Enter Email Address' value={email} onChange={(e)=>setEmail(e)}/>
-        <Input className='mb-4'  style={{border:'1px solid black',padding:10,borderRadius:5}} placeholder='Enter Password' type='password' value={password} onChange={(e)=>setPassword(e)}/>
-        <Button loading={loading} loadingText='Finding User' block color='primary' size='large'  onClick={handleLogin} >Login</Button>        
+        <Form form={form} onFinish={handleLogin}>
+        <Form.Item label="Email Address" name="email" rules={[{required:true,message:"enter email address"},{type:'email',message:"Pleas enter a valid email address"}]}>
+        <Input className="bg-slate-100  p-2 border border-blue-200 rounded-md"   placeholder='Enter Email Address' value={email} onChange={(e)=>setEmail(e)}/>
+        </Form.Item>
+        <Form.Item label="Password" name="password" rules={[{required:true,message:"enter password"}]}>
+        <Input className="bg-slate-100 p-2 border border-blue-200 rounded-md"   placeholder='Enter Password' type='password' value={password} onChange={(e)=>setPassword(e)}/>
+        </Form.Item>
+        {error &&   <NoticeBar    
+        style={{"--background-color":'transparant',"--border-color":"transparant","--text-color":"red",paddingLeft:'20%'}}        
+            icon={<TbLockAccess />}
+            content={error.error.code}
+            color='error'
+          />}
+        <Button className='font-bold mt-2'   loading={loading} loadingText='Finding User' color='primary' fill='outline' size='default' type='ghost'>Proceed to Login</Button>  
+        </Form>
+        <div className='p-2'>
+        <Link to={"/signup"} className='text-slate-600 font-bold'>Dont have account yet ?<span className='text-blue-400'> signup here</span>  </Link>
+        <div className='mt-2'/>
+        <Link to={"/forgot"} className='text-slate-600 font-bold'>Forgot Password ?</Link>
+        </div>      
+        </Card>
     </div>
-    </Card>
+    
   )
 }

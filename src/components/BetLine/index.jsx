@@ -3,6 +3,7 @@
 import {  
   Card,
   Divider,
+  NoticeBar,
   PasscodeInput,
   Selector,
   Space,
@@ -16,12 +17,13 @@ import {
   updateDrawType,
   updateStake,
   updateValue,
+  validate,
 } from "../../features/betlines";
 import { CloseOutline } from "antd-mobile-icons";
 import GameDescription from "../GameDescription";
 
-export default function Betline(props) {
-  const { name, stake, drawType, id } = props;
+export default function Betline(props) {  
+  const { name, stake, drawType, id,isValid} = props;
   const [type, setDrawType] = useState(drawType);
   const dispatch = useDispatch();
   const [length, setLength] = useState(1);
@@ -104,19 +106,22 @@ export default function Betline(props) {
         />
       }
       title={String(name).toUpperCase()}
-      className="mt-4 mb-4 drop-shadow-2xl mx-2 border-2 border-blue-300"
+      className="mt-4 mb-4 shadow-lg drop-shadow-lg mx-2 border-2 border-indigo-300"
     >
+
+      {!isValid&&<NoticeBar content={"This is not a valid Bet please check the digits"} color='alert' />}
       <GameDescription type={name}/>
       <div className="flex justify-center">        
         { name!=="full-sangam" &&<PasscodeInput
           ref={ref}
+          error={!isValid}
           onFill={() => {
             ref.current.blur();
+            dispatch(validate({id}));
           }}
           style={{
             "--cell-size": "48px",
-            fontWeight: "bold",
-            '--border-color':'var(--adm-color-primary)'            
+            fontWeight: "bold",            
           }}
           plain
           value={getValue()}
@@ -144,6 +149,7 @@ export default function Betline(props) {
 
         { name=="full-sangam" && <Space direction="horizontal">
         <PasscodeInput
+          error={!isValid}
           ref={openRef}
           onFill={() => {
             closeRef.current.focus()
@@ -151,7 +157,7 @@ export default function Betline(props) {
           style={{
             "--cell-size": "48px",
             fontWeight: "bold",
-            '--border-color':'var(--adm-color-primary)'            
+            
           }}
           plain
           value={getValue('open')}
@@ -167,15 +173,18 @@ export default function Betline(props) {
             
           }}
         />
+
         <PasscodeInput
+          aria-disabled
+          error={!isValid}
           ref={closeRef}
           onFill={() => {
             closeRef.current.blur();
+            dispatch(validate({id}));
           }}
           style={{
             "--cell-size": "48px",
-            fontWeight: "bold",
-            '--border-color':'var(--adm-color-primary)'            
+            fontWeight: "bold",            
           }}
           plain
           value={getValue('close')}
@@ -194,6 +203,7 @@ export default function Betline(props) {
         />
         </Space>}
 
+        
 
       </div>
       {!!drawType && (
@@ -209,13 +219,9 @@ export default function Betline(props) {
                 {
                   label: "close",
                   value: "close",
-                },
-                {
-                  label: "both",
-                  value: "both",
-                },
+                },                
               ]}
-              defaultValue={["both"]}
+              defaultValue={["open"]}
               value={type}
               onChange={(arr, extend) => {
                 dispatch(

@@ -1,0 +1,7 @@
+.customList{
+    --header-font-size:25px;    
+}
+
+.adm-list-item-content{
+    justify-content: center;
+}

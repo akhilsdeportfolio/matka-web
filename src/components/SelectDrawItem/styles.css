@@ -1,0 +1,16 @@
+.counter{
+    color:black;    
+    text-align: center;
+}
+
+.adm-check-list-item-extra{
+    color:#15803D;
+}
+.adm-list-item-content-main{
+    padding: 2px;
+}
+
+.adm-list-item-content-extra{
+    padding-left: 0;
+    padding: 0;
+}

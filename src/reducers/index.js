@@ -4,6 +4,7 @@ import userReducer from '../features/users';
 import { configureStore } from '@reduxjs/toolkit';
 import betlinesReducer from '../features/betlines';
 import betsReducer from '../features/bets';
+import drawsReducer from '../features/draws';
 import { gamesApi } from '../features/api/apiSlice';
 import logger from 'redux-logger';
 
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   user:userReducer,
   lines:betlinesReducer,
   bets:betsReducer,
+  draws:drawsReducer,
   [gamesApi.reducerPath]:gamesApi.reducer
 })
 
@@ -26,7 +28,7 @@ const middlewareEnhancer = applyMiddleware(thunk)
 
 const store =configureStore({ 
   reducer:rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger).concat(gamesApi.middleware),    
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(gamesApi.middleware),    
   enhancers: [middlewareEnhancer],
 })
 

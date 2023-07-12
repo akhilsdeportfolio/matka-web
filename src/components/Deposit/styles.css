@@ -1,0 +1,11 @@
+.adm-list-item-content{
+    align-items: center;
+}
+
+.adm-form-item-child{
+    flex-direction: row;
+}
+
+.adm-form-item-label{
+    font-size: 25px;
+}
