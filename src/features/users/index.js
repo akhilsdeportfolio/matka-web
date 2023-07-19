@@ -11,13 +11,16 @@ const userSlice = createSlice({
     /* const {userId,token} = action.payload
      */// "Mutating" update syntax thanks to Immer, and no `return` needed
     return {...state,...action.payload} 
-    }    
+    },
+    updateBalance(state,action){
+      return {...state,balance:action.payload};
+    }
   }
 })
 
 // `createSlice` automatically generated action creators with these names.
 // export them as named exports from this "slice" file
-export const { userFound } = userSlice.actions
+export const { userFound,updateBalance} = userSlice.actions
 
 // Export the slice reducer as the default export
 export default userSlice.reducer

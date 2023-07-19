@@ -1,57 +1,54 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from "react";
-import useRazorpay from "react-razorpay";
 import { useDispatch, useSelector } from "react-redux";
 import { AddCircleOutline } from "antd-mobile-icons";
-import { addBetline,addBetLines} from "../../features/betlines";
-import {  Dropdown, Radio, Space } from "antd-mobile";
-import axios from "axios";
-import { userFound } from "../../features/users";
-import {
-  useGetAllGamesQuery,
-} from "../../features/api/apiSlice";
-import { useAuth } from "../../context/Auth/AuthContext";
+import { addBetline, addBetLines } from "../../features/betlines";
+import { Dropdown, Radio, ResultPage, Space } from "antd-mobile";
 import Betline from "../BetLine";
 import shortid from "shortid";
-import { apiUrl, linesKey } from "../../const";
+import { linesKey } from "../../const";
 import "./styles.css";
 import BottomBar from "../BottomBar";
 import { useNavigate } from "react-router-dom";
-import { analytics, auth } from "../../clientFirebase";
+import { analytics } from "../../clientFirebase";
 import { logEvent } from "firebase/analytics";
-import { getAmount } from "../../utils/money";
+import { formatMoney, getAmount } from "../../utils/money";
+import { GiftOutline } from "antd-mobile-icons";
+import { winnings } from "../GameDescription";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
-  const Razorpay = useRazorpay();
   const dispatch = useDispatch();
   const lines = useSelector((store) => store.lines);
-  const userObject = useSelector((store) => store.user);
   const [value, setValue] = useState("");
   const ref = useRef();
-  const navigate=useNavigate();
-  
-  
+  const navigate = useNavigate();
 
-  
+  const details = winnings.map(function (el) {
+    if (el.name !== "Rate Card") {
+      return {
+        label: el.name.toUpperCase(),
+        value: String(el.factor) + " X",
+      };
+    } else {
+      return {
+        label: el.name.toUpperCase(),
+        value: String(el.factor),
+      };
+    }
+  });
 
-  useEffect(()=>{    
-    if(localStorage.getItem(linesKey))
-      dispatch(addBetLines({lines:JSON.parse(localStorage.getItem(linesKey))}))
-  },[])
+  useEffect(() => {
+    if (localStorage.getItem(linesKey))
+      dispatch(
+        addBetLines({ lines: JSON.parse(localStorage.getItem(linesKey)) })
+      );
+  }, []);
 
-
-  useEffect(()=>{
-    if(lines.length)
-    localStorage.setItem(linesKey,JSON.stringify(lines));
-  },[lines]);
-  
-
-
-
-  
-
+  useEffect(() => {
+    localStorage.setItem(linesKey, JSON.stringify(lines));
+  }, [lines]);
 
   function updateSelected(value) {
     switch (value) {
@@ -59,7 +56,7 @@ export default function Home() {
         dispatch(
           addBetline({
             name: value,
-            stake: 100,
+            stake: 20,
             ank: [""],
             drawType: "open",
             id: shortid.generate(),
@@ -71,8 +68,8 @@ export default function Home() {
         dispatch(
           addBetline({
             name: value,
-            stake: 100,
-            jodi: [''],
+            stake: 20,
+            jodi: [""],
             id: shortid.generate(),
             isValid: false,
           })
@@ -82,7 +79,7 @@ export default function Home() {
         dispatch(
           addBetline({
             name: value,
-            stake: 100,
+            stake: 20,
             numbers: [],
             drawType: "open",
             id: shortid.generate(),
@@ -94,7 +91,7 @@ export default function Home() {
         dispatch(
           addBetline({
             name: value,
-            stake: 100,
+            stake: 20,
             numbers: [],
             drawType: "open",
             id: shortid.generate(),
@@ -106,7 +103,7 @@ export default function Home() {
         dispatch(
           addBetline({
             name: value,
-            stake: 100,
+            stake: 20,
             numbers: [],
             drawType: "open",
             id: shortid.generate(),
@@ -118,8 +115,8 @@ export default function Home() {
         dispatch(
           addBetline({
             name: value,
-            stake: 100,
-            numbers:[],
+            stake: 20,
+            numbers: [],
             drawType: "",
             id: shortid.generate(),
             isValid: false,
@@ -130,9 +127,9 @@ export default function Home() {
         dispatch(
           addBetline({
             name: value,
-            stake: 100,
-            openNumbers: [],            
-            closeNumbers:[],
+            stake: 20,
+            openNumbers: [],
+            closeNumbers: [],
             id: shortid.generate(),
             isValid: false,
           })
@@ -141,26 +138,22 @@ export default function Home() {
     }
   }
 
+  function handlePickDraw() {
+    logEvent(analytics, "add_to_cart", {
+      amount: getAmount(lines),
+      totalBets: lines?.length,
+    });
+    navigate("/select-game");
+  }
 
-   function handlePickDraw()
-   {
-      logEvent(analytics,"add_to_cart",{amount:getAmount(lines),totalBets:lines?.length})
-      navigate('/select-game')
-   }  
+  function handleQuickDraw() {
+    // get the next avialable game and place the bet
 
-   function handleQuickDraw()
-   {
-      // get the next avialable game and place the bet 
-      
-   }
-
-  
-
-
+    dispatch(addBetLines({ lines: [] }));
+  }
 
   return (
-    <div style={{ padding: 0}}>
-      {/*   <p>{ userObject.balance || userObject?.serverData?.userData?.balance/100}</p> */}
+    <div style={{ padding: 0 }}>
       <div
         style={{
           display: "flex",
@@ -178,21 +171,20 @@ export default function Home() {
           ref={ref}
         >
           <Dropdown.Item key="text" title="Add Bets" highlight>
-            <div style={{ padding: 12, display: "flex" }}>
+            <div
+              className="text-right"
+              style={{ padding: 12, display: "flex" }}
+            >
               <Radio.Group
                 value={value}
                 onChange={(value) => {
-                  setValue(value.toString());                
+                  setValue(value.toString());
                   ref.current.close();
                   updateSelected(value);
                   setValue("");
                 }}
               >
-                <Space
-                  direction="vertical"
-                  block
-                  style={{ fontWeight: "bold" }}
-                >
+                <Space direction="vertical" block>
                   <Radio block value="ank">
                     Ank
                   </Radio>
@@ -220,8 +212,28 @@ export default function Home() {
           </Dropdown.Item>
         </Dropdown>
       </div>
+
+      {lines.length === 0 && (
+        <ResultPage
+          details={details}
+          icon={<GiftOutline />}
+          status="success"
+          title={`Play now and win ${formatMoney.format(100000)}`}
+          description={`Guess numbers and win upto ${formatMoney.format(
+            100000
+          )} every hour`}
+          primaryButtonText="Play Jodi"
+          secondaryButtonText="Play Ank"
+          onPrimaryButtonClick={() => {
+            updateSelected("jodi");
+          }}
+          onSecondaryButtonClick={() => {
+            updateSelected("ank");
+          }}
+        />
+      )}
       <div>
-        {lines.map((el, index) => {          
+        {lines.map((el, index) => {
           return (
             <Betline
               key={index}
@@ -231,7 +243,7 @@ export default function Home() {
               drawType={el?.drawType}
               stake={el?.stake}
               ank={el?.ank}
-              jodi={el?.jodi}              
+              jodi={el?.jodi}
               numbers={el?.numbers}
               openNumbers={el?.openNumbers}
               closeNumbers={el?.closeNumbers}
@@ -240,23 +252,12 @@ export default function Home() {
           );
         })}
       </div>
-
-      {/*   {playableGames?.games?.map((game,index) => {
-        return (
-          <div key={index}>
-            <h1>              
-              {game.productId}
-              {game.productName}
-            </h1>
-          </div>
-        );
-      })} */}
-      <BottomBar        
+      <BottomBar
         primary={handlePickDraw}
         secondary={handleQuickDraw}
         isLoading={loading}
         primaryText="Pick Draw"
-        secondaryText="Quick Draw"
+        /* secondaryText="Quick Draw" */
       />
     </div>
   );

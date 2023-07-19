@@ -16,10 +16,10 @@ export default defineConfig({
         enabled: false,
       },
     }),
-    sentryVitePlugin({
+    /* sentryVitePlugin({
       authToken:'197ef15f82fa47d088d5ac0b7a638c77012a373a15e2469b80da2c217ed16b92',
       org:"matka-2p",
       project:"javscript-react"
-    })
+    }) */
   ],
 });

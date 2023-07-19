@@ -3,11 +3,10 @@
 @tailwind utilities;
  
 :root {
-    --adm-color-primary: #4338CA;
+    --adm-color-primary: #10B981;
     --adm-color-success: #00b578;
-    --adm-color-warning: #ff8f1f;
+    --adm-color-warning: #FBBF24;
     --adm-color-danger: #ff3141;
-  
     --adm-color-white: #ffff;
     --adm-color-text: black;
     --adm-color-text-l:black;
@@ -29,9 +28,8 @@ html, body {margin: 0; height: 100%; overflow: hidden}
 
 
 button, [type='button'], [type='reset'], [type='submit']{
-    background-color: var(--adm-color-primary);
+    background-color: var(--adm-color-primary);    
 }
-
 .adm-stepper-plus{
   background-color: transparent;
 }

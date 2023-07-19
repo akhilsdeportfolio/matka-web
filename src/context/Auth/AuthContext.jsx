@@ -1,10 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { analytics, auth } from "../../clientFirebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { userFound } from "../../features/users";
 import { setUserId, setUserProperties } from "firebase/analytics";
-
 
 export const AuthContext = createContext();
 
@@ -16,27 +14,22 @@ export const useAuth = () => {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
 
-  function signUp(email, password) {
-    return createUserWithEmailAndPassword(email, password);
-  }
-
-  function logOut()
-  {
-    
+  function logOut() {
     return auth.signOut();
   }
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-
-      if(user)
-      {
-        setUserId(analytics,user.uid);
-        setUserProperties(analytics,{...user})
+      if (user) {
+        setUserId(analytics, user.uid);
+        setUserProperties(analytics, { ...user });
+        if (window.clarity) {
+          window.clarity("set", { user: user.uid });
+          window.clarity("set", { userData: user });
+        }
       }
-      
       dispatch(userFound(user));
       setCurrentUser(user);
       setIsLoading(false);
@@ -44,7 +37,7 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  const value = { user: currentUser, signUp,logOut};
+  const value = { user: currentUser, logOut };
   return (
     <AuthContext.Provider value={value}>
       {!isLoading && children}

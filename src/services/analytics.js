@@ -3,8 +3,7 @@ import { analytics } from "../clientFirebase";
 
 export function trackEvent(event)
 {
-    logEvent(analytics,event);
-    
+    logEvent(analytics,event);   
 }
 
 

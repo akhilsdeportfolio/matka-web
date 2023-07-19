@@ -2,18 +2,18 @@
 import { Button, Space } from "antd-mobile";
 import { TbCoinRupee, TbCurrencyRupee } from "react-icons/tb";
 import { useSelector } from "react-redux";
+import { formatMoney } from "../../utils/money";
 
-export default function BottomBar({  
+export default function BottomBar({
   primary,
   secondary,
   isLoading = false,
-  primaryText="SUBMIT",
-  secondaryText="Cancel",
-  disableSecondary=false
+  primaryText = "SUBMIT",
+  secondaryText = "Cancel",
+  disableSecondary = false,
 }) {
-  
   const lines = useSelector((store) => store.lines);
-  const disabled= lines.filter((el)=>!el.isValid).length > 0; 
+  const disabled = lines.filter((el) => !el.isValid).length > 0;
   const amount = lines.reduce((ac, el) => ac + Number(el.stake), 0);
 
   if (amount == 0) return null;
@@ -21,19 +21,19 @@ export default function BottomBar({
   return (
     <div
       style={{ position: "absolute", bottom: 0, minWidth: "100%" }}
-      className="bg-slate-200 p-3"
+      className="bg-amber-300 p-2"
     >
       <div className="flex flex-row justify-between items-center	">
         <div>
           <p className="text-lg font-bold flex flex-row items-center">
-            <TbCurrencyRupee /> {amount}
-            </p>
+            {formatMoney.format(amount)}
+          </p>
         </div>
         <Space direction="horizontal" className="align-middle">
           <Button
+            size="small"
             color="primary"
             className="font-bold"
-            size="small"
             disabled={disabled}
             onClick={() => {
               primary();
@@ -43,10 +43,10 @@ export default function BottomBar({
             {primaryText}
           </Button>
           {!disableSecondary && (
-            <Button               
+            <Button
+              size="small"
               color="primary"
               className="font-bold"
-              size="small"
               disabled={disabled}
               loading={isLoading}
               onClick={secondary}

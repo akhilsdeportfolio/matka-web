@@ -16,6 +16,10 @@ import Results from "./components/Results";
 import Profile from "./components/Profile";
 import * as Sentry from "@sentry/react";
 import Deposit from "./components/Deposit";
+import BetDetails from "./components/MyBets/BetDetails";
+import MatkaCharts from "./components/MatkaCharts";
+import WithDraw from "./components/WithDraw";
+import PaymentsStatus from "./components/PaymentStatus";
 
 export default function App() {
   const [loading, setIsLoading] = useState(true);
@@ -50,8 +54,7 @@ export default function App() {
   if (loading)
     return (
       <div className="p-2 flex flex-col">
-        <div className="text-center"><DotLoading /><span>Loading ... </span>
-</div>
+        <div className="text-center"><DotLoading /></div>
         <Skeleton.Title active block />
         <Skeleton.Paragraph lineCount={5} active block />
         <Skeleton.Title active block />
@@ -74,11 +77,15 @@ export default function App() {
                   <Route exact path="/mybets" element={<MyBets />} />                  
                   <Route exact path="/results" element={<Results />} />
                   <Route exact path="/profile" element={<Profile />} />
+                  <Route exact path="/charts" element={<MatkaCharts/>} />
                 </Route>
                 <Route exact path="/select-game" element={<SelectDrawList />} />                 
                 <Route exact path="/success/:id" element={<BetAccepted />} />
-                <Route exact path="/deposit" element={<Deposit/>} />
-                <Route exact path="/bet-details/:id" element={<SignUp />} />
+                <Route exact path="/deposit" element={<Deposit/>} />                
+                <Route exact path="/withdraw" element={<WithDraw/>} />                
+                <Route exact path="/bet-details/:id" element={<BetDetails />} />
+                <Route exact path="/payments/all" element={<BetDetails />} />
+                <Route exact path="/payments/:id" element={<PaymentsStatus />} />
               </Route>
             </Routes>
           </Suspense>

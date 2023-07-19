@@ -2,22 +2,20 @@
 import { List } from "antd-mobile";
 import moment from "moment";
 import { TbTicket } from "react-icons/tb";
-import { formatMoney, getAmount } from "../../../utils/money";
-import { useNavigate } from "react-router-dom";
+import { formatMoney, getAmount } from "../../../../utils/money";
+import ResultItem from "../../../Results/ResultItem";
 
-export default function BetItem({ _id, createdAt, lines, status, ...rest }) {
-  const navigate = useNavigate();
 
+export default function BetDetailsHeader({ createdAt, lines, status,...rest }) {
+  
   const { drawId: drawData, winningsDivison } = rest;
 
   return (
+    <>
     <List.Item
       className="border-b"
-      arrow={<TbTicket />}
-      clickable
-      onClick={() => {
-        navigate(`/bet-details/${_id}`);
-      }}
+      arrow={<TbTicket />}      
+      clickable={false}
     >
       <div className="p-2 text-xs border-bottom">
         <div className="flex flex-row justify-between gap-2">
@@ -65,5 +63,10 @@ export default function BetItem({ _id, createdAt, lines, status, ...rest }) {
         </div>
       </div>
     </List.Item>
+    <div className="p-0">
+    <p className="font-bold text-sm my-2 text-gray-400">Draw Result</p>
+    <ResultItem game={drawData}  />
+    </div>
+    </>
   );
 }

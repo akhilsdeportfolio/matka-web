@@ -37,8 +37,7 @@ export default function SelectDrawList() {
     setCopy(data?.games);
   }, [data, isLoading]);
 
-  function handleSearch(value) {
-    console.log(value);
+  function handleSearch(value) {    
     const d = data.games.filter((game) => {
       if (game.productName.toLowerCase().includes(value.toLowerCase())) {
         return true;
@@ -118,18 +117,18 @@ export default function SelectDrawList() {
   }
 
   return (
-    <div style={{ padding: 0, overflow: "hidden", height: "100vh" }}>
+    <div style={{ padding: 0, overflow: "hidden", maxHeight: "100vh" }}>
       <NavBar
         onBack={() => {
           navigate(-1);
         }}
-        className="bg-indigo-700 text-white"
+        className="bg-emerald-500 text-white"
         right={
           <>
             <Button
               type="ghost"
               color="warning"
-              className="font-bold"
+              className="font-bold text-black"
               size="small"
               onClick={() => {
                 navigate("/deposit");

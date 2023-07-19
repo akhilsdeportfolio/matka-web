@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-case-declarations */
-import {  
+import {
   Card,
   Divider,
   NoticeBar,
@@ -19,21 +19,18 @@ import {
   updateValue,
   validate,
 } from "../../features/betlines";
-import { CloseOutline } from "antd-mobile-icons";
+import { CloseOutline, ExclamationCircleOutline } from "antd-mobile-icons";
 import GameDescription from "../GameDescription";
+import { formatMoney } from "../../utils/money";
 
-export default function Betline(props) {  
-  const { name, stake, drawType, id,isValid} = props;
+export default function Betline(props) {
+  const { name, stake, drawType, id, isValid } = props;
   const [type, setDrawType] = useState(drawType);
   const dispatch = useDispatch();
   const [length, setLength] = useState(1);
   const ref = useRef();
-  const openRef=useRef();
-  const closeRef=useRef();
-
-
-
-
+  const openRef = useRef();
+  const closeRef = useRef();
 
   useEffect(() => {
     switch (name) {
@@ -70,7 +67,7 @@ export default function Betline(props) {
         return ank.join("");
       case "jodi":
         const { jodi } = props;
-        
+
         return jodi.join("");
       case "single-panna":
         const { numbers } = props;
@@ -85,11 +82,9 @@ export default function Betline(props) {
         const { numbers: hs } = props;
         return hs.join("");
       case "full-sangam":
-        const { openNumbers ,closeNumbers} = props;
-        if(type==="open")
-          return openNumbers?.join("");
-        else
-          return closeNumbers.join("");
+        const { openNumbers, closeNumbers } = props;
+        if (type === "open") return openNumbers?.join("");
+        else return closeNumbers.join("");
       default:
         break;
     }
@@ -102,109 +97,110 @@ export default function Betline(props) {
           onClick={() => {
             dispatch(removeBetLine({ id }));
           }}
-          color="red"
         />
       }
       title={String(name).toUpperCase()}
-      className="mt-4 mb-4 shadow-lg drop-shadow-lg mx-2 border-2 border-indigo-300"
+      className="mt-4 mb-4 shadow-lg mx-2 bg-white border-2 border-emerald-200"
     >
-
-      {!isValid&&<NoticeBar content={"This is not a valid Bet please check the digits"} color='alert' />}
-      <GameDescription type={name}/>
-      <div className="flex justify-center">        
-        { name!=="full-sangam" &&<PasscodeInput
-          ref={ref}
-          error={!isValid}
-          onFill={() => {
-            ref.current.blur();
-            dispatch(validate({id}));
-          }}
-          style={{
-            "--cell-size": "48px",
-            fontWeight: "bold",            
-          }}
-          plain
-          value={getValue()}
-          length={length}
-          onChange={(value) => {            
-            let key="";
-            if(name==="ank")
-              key="ank";
-            
-            if(name==="jodi")
-              key="jodi";
-
-            if(name=="single-panna" || name=="double-panna" || name=="triple-panna")
-              key="numbers"         
-            if(name=="half-sangam" || name=="full-sangam")     
-              key="numbers"
-            
-              
-            // setValue(value);              
-            dispatch(updateValue({updateKey:key,updateValue:value,id}))
-            
-          }}
-        />}
-
-
-        { name=="full-sangam" && <Space direction="horizontal">
-        <PasscodeInput
-          error={!isValid}
-          ref={openRef}
-          onFill={() => {
-            closeRef.current.focus()
-          }}
-          style={{
-            "--cell-size": "48px",
-            fontWeight: "bold",
-            
-          }}
-          plain
-          value={getValue('open')}
-          length={3}
-          onChange={(value) => {            
-            let key="";
-          
-            if(name=="half-sangam" || name=="full-sangam")     
-              key="openNumbers"
-                          
-            // setValue(value);              
-            dispatch(updateValue({updateKey:key,updateValue:value,id}))
-            
-          }}
+      {!isValid && (
+        <NoticeBar
+          icon={<ExclamationCircleOutline />}
+          content={"This is not a valid Bet please check the digits"}
+          color="alert"
         />
+      )}
+      <GameDescription type={name} />
+      <div className="flex justify-center">
+        {name !== "full-sangam" && (
+          <PasscodeInput
+            ref={ref}
+            error={!isValid}
+            onFill={() => {
+              ref.current.blur();
+              dispatch(validate({ id }));
+            }}
+            style={{
+              "--cell-size": "48px",
+              fontWeight: "bold",
+            }}
+            plain
+            value={getValue()}
+            length={length}
+            onChange={(value) => {
+              let key = "";
+              if (name === "ank") key = "ank";
 
-        <PasscodeInput
-          aria-disabled
-          error={!isValid}
-          ref={closeRef}
-          onFill={() => {
-            closeRef.current.blur();
-            dispatch(validate({id}));
-          }}
-          style={{
-            "--cell-size": "48px",
-            fontWeight: "bold",            
-          }}
-          plain
-          value={getValue('close')}
-          length={3}
-          onChange={(value) => {            
-            let key="";
-          
-            if(name=="full-sangam")     
-              key="closeNumbers"
-            
-              
-            // setValue(value);              
-            dispatch(updateValue({updateKey:key,updateValue:value,id}))
-            
-          }}
-        />
-        </Space>}
+              if (name === "jodi") key = "jodi";
 
-        
+              if (
+                name == "single-panna" ||
+                name == "double-panna" ||
+                name == "triple-panna"
+              )
+                key = "numbers";
+              if (name == "half-sangam" || name == "full-sangam")
+                key = "numbers";
 
+              // setValue(value);
+              dispatch(updateValue({ updateKey: key, updateValue: value, id }));
+            }}
+          />
+        )}
+
+        {name == "full-sangam" && (
+          <Space direction="horizontal">
+            <PasscodeInput
+              error={!isValid}
+              ref={openRef}
+              onFill={() => {
+                closeRef.current.focus();
+              }}
+              style={{
+                "--cell-size": "48px",
+                fontWeight: "bold",
+              }}
+              plain
+              value={getValue("open")}
+              length={3}
+              onChange={(value) => {
+                let key = "";
+
+                if (name == "half-sangam" || name == "full-sangam")
+                  key = "openNumbers";
+
+                dispatch(
+                  updateValue({ updateKey: key, updateValue: value, id })
+                );
+              }}
+            />
+
+            <PasscodeInput
+              aria-disabled
+              error={!isValid}
+              ref={closeRef}
+              onFill={() => {
+                closeRef.current.blur();
+                dispatch(validate({ id }));
+              }}
+              style={{
+                "--cell-size": "48px",
+                fontWeight: "bold",
+              }}
+              plain
+              value={getValue("close")}
+              length={3}
+              onChange={(value) => {
+                let key = "";
+
+                if (name == "full-sangam") key = "closeNumbers";
+
+                dispatch(
+                  updateValue({ updateKey: key, updateValue: value, id })
+                );
+              }}
+            />
+          </Space>
+        )}
       </div>
       {!!drawType && (
         <div className="flex flex-row  p-0 justify-between">
@@ -219,15 +215,17 @@ export default function Betline(props) {
                 {
                   label: "close",
                   value: "close",
-                },                
+                },
               ]}
               defaultValue={["open"]}
               value={type}
               onChange={(arr, extend) => {
-                dispatch(
+                
+                if(arr.length)
+                {dispatch(
                   updateDrawType({ drawType: extend.items[0].value, id: id })
                 );
-                setDrawType(extend.items[0].value);
+                setDrawType(extend.items[0].value);}
               }}
             />
           </Label>
@@ -237,60 +235,41 @@ export default function Betline(props) {
       <div className="flex flex-row justify-between">
         <Label title={"Amount"}>
           <Selector
-            style={{ "--padding": "5px 10px" }}
-            options={[
+            style={{ "--padding": "3px 3px" }}
+            options={[              
               {
-                label: Number("25").toLocaleString("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                  maximumFractionDigits: 0,
-                }),
-                value: "25",
-              },
+                label:formatMoney.format(10),
+                value: "10",
+              },              
               {
-                label: Number("50").toLocaleString("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                  maximumFractionDigits: 0,
-                }),
+                label:formatMoney.format(20),
+                value: "20",
+              },                            
+              {
+                label:formatMoney.format(50),
                 value: "50",
               },
               {
-                label: Number("75").toLocaleString("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                  maximumFractionDigits: 0,
-                }),
-                value: "75",
-              },
-              {
-                label: Number("100").toLocaleString("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                  maximumFractionDigits: 0,
-                }),
+                label:formatMoney.format(100),
                 value: "100",
               },
               {
-                label: Number("200").toLocaleString("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                  maximumFractionDigits: 0,
-                }),
-                value: "200",
+                label:formatMoney.format(250),
+                value: "250",
               },
               {
-                label: Number("500").toLocaleString("en-IN", {
-                  style: "currency",
-                  currency: "INR",
-                  maximumFractionDigits: 0,
-                }),
+                label:formatMoney.format(500),
                 value: "500",
               },
+              {
+                label:formatMoney.format(1000),
+                value: "1000",
+              },
+              
             ]}
             defaultValue={["100"]}
             value={[String(stake)]}
-            onChange={(arr, extend) => {              
+            onChange={(arr, extend) => {
               if (extend.items.length) {
                 dispatch(
                   updateStake({ stake: +extend?.items[0]?.value, id: id })
@@ -299,9 +278,9 @@ export default function Betline(props) {
             }}
           />
         </Label>
-        <Label title={"Max : 10000"} textRight style={{ padding: 10 }}>
+        <Label title={`Max : ${formatMoney.format(10000)}`} textRight style={{ padding: 10 }}>
           <Stepper
-            min={10}
+            min={1}
             max={10000}
             value={stake}
             onChange={(value) =>

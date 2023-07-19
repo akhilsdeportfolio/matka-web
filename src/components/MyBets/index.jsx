@@ -1,37 +1,41 @@
 import { useGetAllMyBetsByTokenQuery } from "../../features/api/apiSlice";
-import { DotLoading, List, Result } from "antd-mobile";
+import {  List, Result } from "antd-mobile";
 import BetItem from "./BetItem";
-
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { addBets } from "../../features/bets";
 
 export default function MyBets() {
-  const { data, loading } = useGetAllMyBetsByTokenQuery();
+  const { data = { data: [] }, } = useGetAllMyBetsByTokenQuery();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (data.data.length) dispatch(addBets(data.data));
+  }, [data]);
+
   const rupee = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   });
 
-  if (loading)
-    return (
-      <div className="text-center">
-        <DotLoading />
-      </div>
-    );
+  
 
-  if (data?.data) {
+  if (data?.data.length === 0) {
     return (
-      
       <Result
-        status="info"      
+        status="info"
         title="Your have not placed any bets yet"
-        description={`start betting and win upto ${rupee.format(
-          120000
+        description={`start playing  and win upto ${rupee.format(
+          100000
         )} every 15 mins`}
       />
     );
   }
 
   return (
-    <List header={"Bets that are placed by you"}>
+    <List mode="card" className="list">
       {data?.data?.map((bet) => {
         return <BetItem key={bet._id} {...bet} />;
       })}

@@ -7,8 +7,8 @@ const betsSlice = createSlice({
   initialState: initState,
   reducers: {
     addBets(state, action) {
-      return { ...state, ...action.payload };
-    },
+      return [...action.payload]
+    },    
   },
 });
 

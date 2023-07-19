@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/no-unescaped-entities */
-const winnings = [
-  { name: "ank", factor: 90, digits: 1 },
-  { name: "jodi", factor: 950, digits: 2 },
-  { name: "single-panna", factor: 1500, digits: 3 },
-  { name: "double-panna", factor: 3000, digits: 3 },
-  { name: "triple-panna", factor: 6000, digits: 3 },
-  { name: "half-sangam", factor: 10000, digits: 3 },
-  { name: "full-sangam", factor: 100000, digits: 6 },
+export const winnings = [  
+  { name: "ank", factor: 9, digits: 1 },
+  { name: "jodi", factor: 95, digits: 2 },
+  { name: "single-panna", factor: 150, digits: 3 },
+  { name: "double-panna", factor: 300, digits: 3 },
+  { name: "triple-panna", factor: 600, digits: 3 },
+  { name: "half-sangam", factor: 1000, digits: 3 },
+  { name: "full-sangam", factor: 10000, digits: 6 },
 ];
 
 export default function GameDescription({ type }) {
@@ -18,13 +18,13 @@ export default function GameDescription({ type }) {
         className={`mb-2 text-xs font-bold text-center`}
         style={{ color: "var(--adm-color-weak)" }}
       >
-        Choose {game.digits} Digit's and win {game.factor }X your bet
+        Guess {game.digits} Digit's and win {game.factor }X your bet
       </p>
       <p
         className={`mb-2 text-xs text-center`}
         style={{ color: "var(--adm-color-weak)" }}
       >
-        play &#8377;100 and win &#8377;{game.factor * 10}
+        play &#x20B9; 100 and win &#x20B9; {game.factor * 100}
       </p>
     </>
   );

@@ -34,10 +34,14 @@ const betlinesSlice = createSlice({
                 return {...el,isValid:true}
 
               if(el.name==="double-panna" && el.numbers.length===3)
+              { 
                 return {...el,isValid:true}
+              }
 
               if(el.name==="triple-panna" && el.numbers.length===3)
-                return {...el,isValid:true}
+              {
+                 return {...el,isValid:true}
+              }
 
               if(el.name==="half-sangam" && el.numbers.length===3)
                 return {...el,isValid:true}

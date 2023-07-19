@@ -24,11 +24,11 @@ export default function SelectDrawItem({ game, value }) {
               </p>
             </div>
             <div className="mx-2">              
-              <p className="text-xs  text-white bg-yellow-500 px-2 py-1 rounded-lg font-light">{moment(game.date,'DD-MM-YYYY').format('LL')}</p>
+              <p className="text-xs  text-white bg-amber-400 px-2 py-1 rounded-lg font-light">{moment(game.date,'DD-MM-YYYY').format('LL')}</p>
             </div>
             
           </div>
-          <p className="text-center font-bold text-lg mx-4" >{game.productName}</p>
+          <p className="text-center font-bold text-lg mx-4 my-2" >{game.productName}</p>
           <Form.Item disabled className="bg-transparent">
             <div className="flex flex-row items-center justify-between">
               <PasscodeInput
