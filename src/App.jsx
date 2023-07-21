@@ -5,7 +5,7 @@ import SignUp from "./components/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/Auth/AuthContext";
 import React, { Suspense, useEffect, useState } from "react";
-import { DotLoading, Skeleton } from "antd-mobile";
+import { DotLoading, Skeleton, SpinLoading } from "antd-mobile";
 import Dashboard from "./components/Dashboard";
 import "./App.css";
 import { auth } from "./clientFirebase";
@@ -20,6 +20,7 @@ import BetDetails from "./components/MyBets/BetDetails";
 import MatkaCharts from "./components/MatkaCharts";
 import WithDraw from "./components/WithDraw";
 import PaymentsStatus from "./components/PaymentStatus";
+import TransactionsList from "./components/Transactions";
 
 export default function App() {
   const [loading, setIsLoading] = useState(true);
@@ -54,13 +55,8 @@ export default function App() {
   if (loading)
     return (
       <div className="p-2 flex flex-col">
-        <div className="text-center"><DotLoading /></div>
-        <Skeleton.Title active block />
-        <Skeleton.Paragraph lineCount={5} active block />
-        <Skeleton.Title active block />
-        <Skeleton.Paragraph lineCount={5} active block />
-        <Skeleton.Title active block />
-        <Skeleton.Paragraph lineCount={5} active block />
+        <p className="text-center">Loading</p>
+        <div className="text-center"><SpinLoading color="primary" className="m-auto w-1/2" /></div>        
       </div>
     );
 
@@ -84,7 +80,7 @@ export default function App() {
                 <Route exact path="/deposit" element={<Deposit/>} />                
                 <Route exact path="/withdraw" element={<WithDraw/>} />                
                 <Route exact path="/bet-details/:id" element={<BetDetails />} />
-                <Route exact path="/payments/all" element={<BetDetails />} />
+                <Route exact path="/payments/all" element={<TransactionsList />} />
                 <Route exact path="/payments/:id" element={<PaymentsStatus />} />
               </Route>
             </Routes>

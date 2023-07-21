@@ -9,3 +9,7 @@ export const formatMoney = new Intl.NumberFormat("en-IN", {
   minimumFractionDigits: 0,
   maximumFractionDigits:0
 });
+export const formatMoneyWithDecimals = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",   
+});

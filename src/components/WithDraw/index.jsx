@@ -3,24 +3,69 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useCreateWithDrawMutation } from "../../features/api/apiSlice";
+import { formatMoney } from "../../utils/money";
+import {
+  isValidNumberForRegion,
+  isPossiblePhoneNumber,
+  parsePhoneNumber,
+} from "libphonenumber-js";
 
 export default function WithDraw() {
   const navigate = useNavigate();
   const [loading, setIsloading] = useState(false);
   const [form] = Form.useForm();
   const userBalance = useSelector((store) => store.user.balance) / 100;
-  const [callWithDrawApi,]=useCreateWithDrawMutation();
+  const [callWithDrawApi] = useCreateWithDrawMutation();
+
+  function isValidPhoneNumber(_, phoneNumber) {
+    if (!phoneNumber) return Promise.resolve();
+
+    if (phoneNumber.length > 5) {
+      const number = parsePhoneNumber("+91" + phoneNumber);
+      if (isValidNumberForRegion(number.number, "IN")) {
+        return Promise.resolve();
+      } else {
+        return Promise.reject(new Error("Invalid phone Number"));
+      }
+    } else {
+      return Promise.reject(new Error("Invalid phone Number"));
+    }
+  }
+
+  function isValid_IFSC_Code(_, ifsc_Code) {
+    // Regex to check valid
+    // ifsc_Code
+    let regex = new RegExp(/^[A-Z]{4}0[A-Z0-9]{6}$/);
+
+    // if ifsc_Code
+    // is empty return false
+    if (ifsc_Code == null) {
+      return Promise.reject(new Error("Invalid IFSC code"));
+    }
+
+    // Return true if the ifsc_Code
+    // matched the ReGex
+    if (regex.test(ifsc_Code) == true) {
+      return Promise.resolve();
+    } else {
+      return Promise.reject(new Error("Invalid IFSC code"));
+    }
+  }
 
   const customValidator = (_, value) => {
     if (!value) {
-      throw new Error("");
+      return Promise.reject(
+        new Error("You don't have enough balance in your account.")
+      );
     }
 
     const currentValue = Number(value);
     if (currentValue > userBalance) {
-      return Promise.reject(new Error("You don't have enough balance in your account."));
+      return Promise.reject(
+        new Error("You don't have enough balance in your account.")
+      );
     } else {
-      return Promise.resolve()
+      return Promise.resolve();
     }
   };
 
@@ -34,19 +79,32 @@ export default function WithDraw() {
       >
         Instant With Draw
       </NavBar>
-      <div className="py-8" />
+      <div className="" />
+      <p className="p-3 mb-2 text-base font-bold">
+        Instant With Draw{" "}
+        <span className="text-xs text-gray-400">(15-30 mins)</span>
+      </p>
       <Form
         form={form}
-        onFinish={(data) => {
-          setIsloading(true);          
-          callWithDrawApi(data)
+        onFinish={(data) => {          
+          setIsloading(true)
+          callWithDrawApi(data).then((resp)=>{
+            console.log(resp);
+            setIsloading(false);
+          })
         }}
         layout="vertical"
         className="items-center"
       >
         <Form.Item
           name="mobile"
-          rules={[{ required: true, message: "Enter Phone Number to proceed" }]}
+          rules={[
+            { required: true, message: "field required" },
+            {
+              validator: isValidPhoneNumber,
+              message: "not a valid phone number",
+            },
+          ]}
           label="Enter Mobile Number"
         >
           <Input
@@ -70,7 +128,10 @@ export default function WithDraw() {
         </Form.Item>
         <Form.Item
           name="ifsc"
-          rules={[{ required: true, message: "Enter IFSC Code" }]}
+          rules={[
+            { required: true, message: "Enter IFSC Code" },
+            { validator: isValid_IFSC_Code, message: "Invalid IFSC Code" },
+          ]}
           label="Enter IFSC code"
         >
           <Input
@@ -88,14 +149,18 @@ export default function WithDraw() {
             },
             {
               validator: customValidator,
-              message: "You dont have enough funds in your account",
+              message: "Not enough funds in your account",
             },
           ]}
-          label="Enter amount (100 - 99999 INR)"
+          label={`Enter amount - (min : ${formatMoney.format(
+            1
+          )} , max : ${formatMoney.format(500000)})`}
         >
           <Input
             type="number"
-            placeholder="enter amount (100 - 99999 INR)"
+            placeholder={`${formatMoney.format(1)} - ${formatMoney.format(
+              500000
+            )}`}
             className="p-3 border-2 border-black rounded"
           />
         </Form.Item>

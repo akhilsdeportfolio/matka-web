@@ -59,32 +59,49 @@ export const gamesApi = createApi({
     }),
     createWithDraw: builder.mutation({
       query: (data) => ({
-        url: "/payments/withDraw",
+        url: "/payments/withdraw",
         method: "post",
         body: { ...data },
       }),
     }),
-    phonePeGateway:builder.mutation({
-      query:(data)=>({url:"/payments/init/phonePe",method:'post',body:{...data}})
+    phonePeGateway: builder.mutation({
+      query: (data) => ({
+        url: "/payments/init/phonePe",
+        method: "post",
+        body: { ...data },
+      }),
     }),
-    phonePeGatewayIntent:builder.mutation({
-      query:(data)=>({url:"/payments/init/phonePe/intent",method:'post',body:{...data}})
+    phonePeGatewayIntent: builder.mutation({
+      query: (data) => ({
+        url: "/payments/init/phonePe/intent",
+        method: "post",
+        body: { ...data },
+      }),
     }),
-    phonePeGatewayQr:builder.mutation({
-      query:(data)=>({url:"/payments/init/phonePe/qr",method:'post',body:{...data}})
+    phonePeGatewayQr: builder.mutation({
+      query: (data) => ({
+        url: "/payments/init/phonePe/qr",
+        method: "post",
+        body: { ...data },
+      }),
     }),
-    phonePeUpiCollect:builder.mutation({
-      query:(data)=>({url:"/payments/init/phonePe/vpaCollect",method:'post',body:{...data}})
+    phonePeUpiCollect: builder.mutation({
+      query: (data) => ({
+        url: "/payments/init/phonePe/vpaCollect",
+        method: "post",
+        body: { ...data },
+      }),
     }),
-    phonePeCheckStauts:builder.query({
-      query:(transactionId)=>`/payments/phonepe/status/${transactionId}`
+    phonePeCheckStauts: builder.query({
+      query: (transactionId) => `/payments/phonepe/status/${transactionId}`,
     }),
-    getAllTransactions:builder.mutation({
-      query:()=>'/payments/all',
-      method:'post',      
-    })
+    getAllTransactions: builder.mutation({
+      query: () => ({url:"/payments/all",method:'post'}),      
+    }),
   }),
 });
+
+
 
 export const {
   useGetAllGamesQuery,
@@ -101,7 +118,8 @@ export const {
   usePhonePeGatewayMutation,
   usePhonePeGatewayQrMutation,
   usePhonePeGatewayIntentMutation,
-  usePhonePeUpiCollectMutation,
+  usePhonePeUpiCollectMutation, 
+  useGetAllTransactionsMutation,
   usePhonePeCheckStautsQuery,
-  useGetAllTransactionsMutation
+  useLazyPhonePeCheckStautsQuery
 } = gamesApi;

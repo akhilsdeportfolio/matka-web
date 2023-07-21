@@ -65,7 +65,7 @@ export default function Profile() {
           Account Confirmation
         </List.Item> */}
         <List.Item className="p-2" prefix={<TbCoinRupee size={24} />} onClick={() => {
-          navigate('/payments')
+          navigate('/payments/all')
         }}>
           Payments History
         </List.Item>

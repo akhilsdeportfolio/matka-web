@@ -25,6 +25,7 @@ export default function Deposit() {
   const [form] = Form.useForm();
   const [qrData, setQrData] = useState("");
   const [completed, setCompleted] = useState(false);
+  const [intentUrl,setIntentUrl]=useState('');
   const [error, setError] = useState({});
 
   return (
@@ -43,7 +44,7 @@ export default function Deposit() {
         onFinish={(data) => {
           setIsloading(true);
 
-          callPhonepe({ amount: data.amount * 100 })
+          /* callPhonepe({ amount: data.amount * 100 })
             .then((resp) => {
               if (resp.error) {
                 Toast.show("Error Code " + resp.error.status);
@@ -61,7 +62,16 @@ export default function Deposit() {
             })
             .catch((e) => {
               console.log("Error", e);
+            }); */
+
+
+            callQr({amount:data.amount*100}).then((resp)=>{
+              setIntentUrl(resp.data.data.instrumentResponse.intentUrl);              
+              setQrData(resp.data.data.instrumentResponse.qrData)              
+              navigate(`/payments/${resp.data.data.merchantTransactionId}`)            
+
             });
+
 
           /* vpaCollect({ amount: data.amount * 100 })
             .then((resp) => {
@@ -70,8 +80,7 @@ export default function Deposit() {
                 setIsloading(false);
                 setError(resp.error);
               } else {
-                const { merchantTransactionId } = resp.data.data;
-                console.log(resp.data);
+                const { merchantTransactionId } = resp.data.data;                
                 navigate(`/payments/${merchantTransactionId}`);
               }
             })
@@ -127,8 +136,7 @@ export default function Deposit() {
             Proceed to Pay
           </Button>
         </div>
-      </Form>
-      {JSON.stringify(error)}
+      </Form>              
     </>
   );
 }

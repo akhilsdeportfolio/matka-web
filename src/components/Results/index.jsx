@@ -1,4 +1,4 @@
-import { DotLoading, Dropdown, List, Radio, Result, Space } from "antd-mobile";
+import { DotLoading, Dropdown, List, Radio, Result, Space, SpinLoading } from "antd-mobile";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { drawNames } from "../../const";
@@ -39,7 +39,7 @@ export default function Results() {
   if(apiResult.status==='pending')
   {
     return <div className="text text-center">
-      <DotLoading/>
+      <SpinLoading color="primary" className="m-auto w-1/2"/>
     </div>
   }
 

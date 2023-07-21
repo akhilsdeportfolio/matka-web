@@ -83,7 +83,7 @@ export default function Dashboard() {
     <div style={{ margin: "0px",overflow:'hidden'}}>
       <div >
         <div className="flex flex-row justify-between items-center bg-emerald-500">
-          <div className="px-4 p-2 rounded-ful">
+          <div className="px-4 p-2">
           <img height={40} width={64} src="/logo.png" />
           </div>
           <div className="mx-2">
