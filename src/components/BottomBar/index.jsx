@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { Button, Space } from "antd-mobile";
-import { TbCoinRupee, TbCurrencyRupee } from "react-icons/tb";
 import { useSelector } from "react-redux";
-import { formatMoney } from "../../utils/money";
+import { formatMoneyWithDecimals } from "../../utils/money";
+import { useTranslation } from "react-i18next";
 
 export default function BottomBar({
   primary,
@@ -15,6 +15,7 @@ export default function BottomBar({
   const lines = useSelector((store) => store.lines);
   const disabled = lines.filter((el) => !el.isValid).length > 0;
   const amount = lines.reduce((ac, el) => ac + Number(el.stake), 0);
+  const {t}=useTranslation();
 
   if (amount == 0) return null;
 
@@ -26,7 +27,7 @@ export default function BottomBar({
       <div className="flex flex-row justify-between items-center	">
         <div>
           <p className="text-lg font-bold flex flex-row items-center">
-            {formatMoney.format(amount)}
+            {formatMoneyWithDecimals.format(amount)}
           </p>
         </div>
         <Space direction="horizontal" className="align-middle">
@@ -40,7 +41,7 @@ export default function BottomBar({
             }}
             loading={isLoading}
           >
-            {primaryText}
+            {t(primaryText)}
           </Button>
           {!disableSecondary && (
             <Button
@@ -51,7 +52,7 @@ export default function BottomBar({
               loading={isLoading}
               onClick={secondary}
             >
-              {secondaryText}
+              {t(secondaryText)}
             </Button>
           )}
         </Space>

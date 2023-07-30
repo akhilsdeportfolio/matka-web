@@ -4,6 +4,7 @@ import userReducer from '../features/users';
 import { configureStore } from '@reduxjs/toolkit';
 import betlinesReducer from '../features/betlines';
 import betsReducer from '../features/bets';
+import paymentsReducer from '../features/payments';
 import drawsReducer from '../features/draws';
 import { gamesApi } from '../features/api/apiSlice';
 import logger from 'redux-logger';
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   lines:betlinesReducer,
   bets:betsReducer,
   draws:drawsReducer,
+  payments:paymentsReducer,
   [gamesApi.reducerPath]:gamesApi.reducer
 })
 

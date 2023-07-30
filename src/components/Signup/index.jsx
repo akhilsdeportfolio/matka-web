@@ -9,6 +9,8 @@ import {
   useAddPhoneNumberToUserMutation,
   useSignupUserMutation,
 } from "../../features/api/apiSlice";
+import Navbar from "../Navbar";
+import { useTranslation } from "react-i18next";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
@@ -20,6 +22,9 @@ export default function SignUp() {
   const [form] = Form.useForm();
   const [callAddPhoneNumber] = useAddPhoneNumberToUserMutation();
   const [callSignup] = useSignupUserMutation();
+  const {t}=useTranslation();
+
+  
   async function handleSignup(data) {
     setLoading(true);
 
@@ -42,10 +47,12 @@ export default function SignUp() {
   }
 
   return (
+    <>
+    <Navbar/>
     <div className="loginContainer">
       <Card
         style={{ padding: 20 }}
-        className="drop-shadow-xl border-2 border-blue-300"
+        className="drop-shadow-2xl"
       >
         <img
           src="/logo.png"
@@ -53,46 +60,46 @@ export default function SignUp() {
           height="100"
           style={{ margin: "auto" }}
         />
-        <p className="text-xl mb-2 mt-4">Create New Account</p>
+        <p className="text-xl mb-2 mt-4">{t("Create New Account")}</p>
         <Form form={form} onFinish={handleSignup}>
           <Form.Item
-            label="Email Address"
+            label={t('Email Address')}
             name="email"
             rules={[
-              { required: true, message: "enter email address" },
-              { type: "email", message: "Pleas enter a valid email address" },
+              { required: true, message: t("enter email") },
+              { type: "email", message: t("Please enter a valid email address") },
             ]}
           >
             <Input
               className="bg-slate-100  p-2 border border-blue-200 rounded-md"
-              placeholder="Enter Email Address"
+              placeholder={t('Email Address')}
               value={email}
               onChange={(e) => setEmail(e)}
             />
           </Form.Item>
           <Form.Item
-            label="Mobile Number"
+            label={t('Enter Mobile Number')}
             name="mobile"
             rules={[
-              { required: true, message: "enter mobile number" },
+              { required: true, message: t("Enter Mobile Number") },
               { min: 10, message: "Pleas enter a valid mobile number" },
             ]}
           >
             <Input
               className="bg-slate-100  p-2 border border-blue-200 rounded-md"
-              placeholder="Enter Mobile Number"
+              placeholder={t("Enter Mobile Number")}
               value={phone}
               onChange={(e) => setPhone(e)}
             />
           </Form.Item>
           <Form.Item
-            label="Password"
+            label={t("Password")}
             name="password"
-            rules={[{ required: true, message: "enter password" }]}
+            rules={[{ required: true, message: t("enter password") }]}
           >
             <Input
               className="bg-slate-100 p-2 border border-blue-200 rounded-md"
-              placeholder="Enter Password"
+              placeholder={t('enter password')}
               type="password"
               value={password}
               onChange={(e) => setPassword(e)}
@@ -114,7 +121,7 @@ export default function SignUp() {
           <Button
             className="font-bold mt-2"
             loading={loading}
-            loadingText="Finding User"
+            loadingText={t("Finding User")}
             onClick={() => {
               form.submit();
             }}
@@ -123,16 +130,17 @@ export default function SignUp() {
             size="default"
             type="ghost"
           >
-            Create Account
+            {t("Create Account")}
           </Button>
         </Form>
         <div className="p-2">
           <Link to={"/login"} className="text-slate-600 font-bold">
-            Already have account yet ?
-            <span className="text-blue-400"> login here</span>{" "}
+            {t("Already have account")}
+            <span className="text-blue-400"> {t("login")}</span>{" "}
           </Link>
         </div>
       </Card>
     </div>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 .pending{
-    --background-color:orange
+    --background-color:rgb(234 179 8);
 }
 
 .success{
-    --background-color:#16A34A
+    --background-color: rgb(34 197 94)
 }

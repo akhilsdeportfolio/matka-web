@@ -1,32 +1,25 @@
-import { Button, Form, Input, NavBar, Toast } from "antd-mobile";
-import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+/* eslint-disable no-unused-vars */
+import { Button, Form, Input, NavBar, Toast,  } from "antd-mobile";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./styles.css";
 import {
-  useInitiatePaymentMutation,
-  usePhonePeGatewayMutation,
-  usePhonePeGatewayIntentMutation,
-  usePhonePeGatewayQrMutation,
-  usePhonePeUpiCollectMutation,
-  usePhonePeCheckStautsQuery,
+  usePhonePeGatewayQrMutation,  
 } from "../../features/api/apiSlice";
-import { auth } from "../../clientFirebase";
-import QRCode from "react-qr-code";
+import { useDispatch } from "react-redux";
+import { paymentCreated } from "../../features/payments";
+import { formatMoney } from "../../utils/money";
+import { useTranslation } from "react-i18next";
 
 export default function Deposit() {
   const navigate = useNavigate();
   const [value, setValue] = useState(200);
-  const [callInitPayment] = useInitiatePaymentMutation();
-  const [callIntent] = usePhonePeGatewayIntentMutation();
   const [callQr] = usePhonePeGatewayQrMutation();
-  const [vpaCollect] = usePhonePeUpiCollectMutation();
-  const [callPhonepe] = usePhonePeGatewayMutation();
   const [loading, setIsloading] = useState(false);
   const [form] = Form.useForm();
-  const [qrData, setQrData] = useState("");
-  const [completed, setCompleted] = useState(false);
-  const [intentUrl,setIntentUrl]=useState('');
-  const [error, setError] = useState({});
+  const dispatch = useDispatch();
+  const {t}=useTranslation();
+
 
   return (
     <>
@@ -36,9 +29,13 @@ export default function Deposit() {
         }}
         className="bg-emerald-500 text-white"
       >
-        Fast Deposit
-      </NavBar>
-      <div className="py-8" />
+        {t('deposit')}
+      </NavBar>      
+      <div className="" />
+      <p className="p-3 mb-2 text-base font-bold">
+        {t('Instant Deposit')}
+        <span className="text-xs text-gray-400">{t('(amount added to wallet instantly)')}</span>
+      </p>
       <Form
         form={form}
         onFinish={(data) => {
@@ -66,9 +63,18 @@ export default function Deposit() {
 
 
             callQr({amount:data.amount*100}).then((resp)=>{
-              setIntentUrl(resp.data.data.instrumentResponse.intentUrl);              
-              setQrData(resp.data.data.instrumentResponse.qrData)              
-              navigate(`/payments/${resp.data.data.merchantTransactionId}`)            
+              
+              if(resp.error)
+              {                 
+                setIsloading(false)
+                Toast.show(resp.error.data.e.error.description)
+                return ;
+              }
+
+              setIsloading(false);
+              dispatch(paymentCreated({amount:data.amount,...resp.data.data}))
+              navigate(`/payments/${resp.data.data.merchantTransactionId}`)   
+              
 
             });
 
@@ -110,12 +116,12 @@ export default function Deposit() {
       >
         <Form.Item
           name="amount"
-          rules={[{ required: true, message: "enter amount to proceed" }]}
-          label="enter amount (100 - 99999 INR)"
+          rules={[{ required: true, message: "enter amount to proceed" },{min:3,message:'please deposit atleast 100 rs'}]}
+          label={t('Enter amount minimum ₹100')}
         >
           <Input
             type="number"
-            placeholder="enter amount (100 - 99999 INR)"
+            placeholder={t('Enter amount minimum ₹100')}
             value={value}
             className="p-3 border-2 border-black rounded"
             onChange={(val) => setValue(val)}
@@ -133,7 +139,7 @@ export default function Deposit() {
               form.submit();
             }}
           >
-            Proceed to Pay
+            {t('Proceed to Pay')}
           </Button>
         </div>
       </Form>              

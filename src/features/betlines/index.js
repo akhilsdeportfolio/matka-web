@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { isValidDoublePanna, isValidSinglePanna, isValidTriplePanna } from "../../utils/gameUtils";
 
 const initialState = [];
 
@@ -30,20 +31,20 @@ const betlinesSlice = createSlice({
               if(el.name==="jodi" && el.jodi.length===2)              
                 return {...el,isValid:true}
               
-              if(el.name==="single-panna" && el.numbers.length===3)
+              if(el.name==="single-panna" && el.numbers.length===3 && isValidSinglePanna(el?.numbers))
                 return {...el,isValid:true}
 
-              if(el.name==="double-panna" && el.numbers.length===3)
+              if(el.name==="double-panna" && el.numbers.length===3 && isValidDoublePanna(el?.numbers))
               { 
                 return {...el,isValid:true}
               }
 
-              if(el.name==="triple-panna" && el.numbers.length===3)
+              if(el.name==="triple-panna" && el.numbers.length===3 && isValidTriplePanna(el?.numbers))
               {
                  return {...el,isValid:true}
               }
 
-              if(el.name==="half-sangam" && el.numbers.length===3)
+              if(el.name==="half-sangam" && el.numbers.length===3 && el.ank.length===1)
                 return {...el,isValid:true}
 
 
@@ -80,11 +81,10 @@ const betlinesSlice = createSlice({
           else if(name==='full-sangam')
           {
             return {...betLine,[updateKey]:updateValue,isValid:isValid}
-          }
+          }         
           else return { ...betLine, [updateKey]: updateValue.split(""),isValid:isValid};
         } else return betLine;
       });
-
       return betlines;
     },
     updateStake(state, action) {

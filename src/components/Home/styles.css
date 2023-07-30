@@ -8,3 +8,6 @@
      gap: 5px; 
   }
   
+.custom{
+  --background-color:#059669;
+}

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { List } from "antd-mobile";
 import LinesListItem from "./LinesListItem";
 

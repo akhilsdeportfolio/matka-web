@@ -12,4 +12,6 @@ export const formatMoney = new Intl.NumberFormat("en-IN", {
 export const formatMoneyWithDecimals = new Intl.NumberFormat("en-IN", {
   style: "currency",
   currency: "INR",   
+  minimumFractionDigits:2,
+  maximumFractionDigits:2
 });

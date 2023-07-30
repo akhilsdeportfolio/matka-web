@@ -4,8 +4,10 @@ import { CheckList, Form, PasscodeInput } from "antd-mobile";
 import Countdown from "react-countdown";
 import moment from "moment";
 import './styles.css'
+import { useTranslation } from "react-i18next";
 
 export default function SelectDrawItem({ game, value }) {
+  const {t}=useTranslation();
   return (
     <div>
       <CheckList.Item        
@@ -19,7 +21,7 @@ export default function SelectDrawItem({ game, value }) {
           <div className="flex flex-row justify-between items-center px-4">
           <div>
               <p className="text-xs  text-white bg-green-400 px-2 py-1 rounded-lg font-light">
-                Staus :{" "}
+                {t('status')+" : "}
                 {game.openDrawStatus === "TO_BE_DRAWN" ? " OPEN" : " CLOSE"}
               </p>
             </div>
@@ -28,7 +30,7 @@ export default function SelectDrawItem({ game, value }) {
             </div>
             
           </div>
-          <p className="text-center font-bold text-lg mx-4 my-2" >{game.productName}</p>
+          <p className="text-center font-bold text-lg mx-4 my-2" >{t(game.productName)}</p>
           <Form.Item disabled className="bg-transparent">
             <div className="flex flex-row items-center justify-between">
               <PasscodeInput
@@ -58,7 +60,7 @@ export default function SelectDrawItem({ game, value }) {
                 daysInHours
                 date={moment.unix(game.openDrawTime).toDate()}
               />
-              <p className="text-xs font-bold text-gray-400">{"Draw Time : "+moment.unix(game.openDrawTime).format('LT').toString()} </p>
+              <p className="text-xs font-bold text-gray-400">{t('Draw Time')+' : '+moment.unix(game.openDrawTime).format('LT').toString()} </p>
             </div>
             <div className="text-center">              
               <Countdown                
@@ -68,7 +70,7 @@ export default function SelectDrawItem({ game, value }) {
                 precision={3}
                 className="font-bold text-lg counter text-center"
               />
-              <p className="text-xs font-bold text-gray-400">{"Draw Time : "+moment.unix(game.closeDrawTime).format('LT').toString()}</p>
+              <p className="text-xs font-bold text-gray-400">{t('Draw Time')+' : '+moment.unix(game.closeDrawTime).format('LT').toString()}</p>
             </div>
           </div>
         </div>

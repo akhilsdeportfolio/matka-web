@@ -1,20 +1,22 @@
-import { Button,Divider, List } from "antd-mobile";
+import { Button,Divider, List, Toast } from "antd-mobile";
 import { useSelector } from "react-redux";
-import { formatMoney } from "../../utils/money";
+import { formatMoneyWithDecimals } from "../../utils/money";
 import {useAuth} from '../../context/Auth/AuthContext';
 import {  
-  PayCircleOutline,    
-  QuestionCircleOutline,
   UnlockOutline
 } from "antd-mobile-icons";
 import "./styles.css";
-import { TbCashBanknote, TbCoinRupee, TbQuestionMark} from "react-icons/tb";
+import { TbCashBanknote, TbCurrencyRupee, TbQuestionMark} from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function Profile() {
   const balance = useSelector((store) => store.user.balance / 100);
   const {logOut}=useAuth();
   const navigate = useNavigate();
+  const {t}=useTranslation();
+
+
 
   return (
     <div>
@@ -22,26 +24,27 @@ export default function Profile() {
         <List className="w-full">
           <List.Item className="mkListItem">
             <div className="flex flex-row">
-              <TbCashBanknote color="green" size={32} />
+            <TbCashBanknote color="green" size={32} /> 
               <div className="flex flex-col px-2">
-                <p className="text-sm font-bold">Balance</p>
-                <p className="text-sm ">{formatMoney.format(balance)}</p>
+                <p className="text-xl font-bold">{t('balance')}</p>
+                <p className="text-2xl ">{formatMoneyWithDecimals.format(balance)}</p>
               </div>
             </div>
             <div className="flex flex-row p-2 gap-2">
-              <Button size="small" color="primary" className="font-bold" onClick={()=>{navigate('/deposit')}}>
-                Deposit
+              <Button size="small" color="primary" shape="rounded" className="font-bold" onClick={()=>{navigate('/deposit')}}>
+                {t('deposit')}
               </Button>
               <Button
                 size="small"
                 color="warning"
                 type="ghost"
-                className="font-bold"
+                shape="rounded"
+                className="font-bold text-black"
                 onClick={()=>{
                   navigate('/withdraw')
                 }}
               >
-                Withdraw
+                {t('withdraw')}
               </Button>
             </div>
           </List.Item>
@@ -64,26 +67,27 @@ export default function Profile() {
         >
           Account Confirmation
         </List.Item> */}
-        <List.Item className="p-2" prefix={<TbCoinRupee size={24} />} onClick={() => {
+        <List.Item className="p-2" prefix={<TbCurrencyRupee size={18} />} onClick={() => {
           navigate('/payments/all')
         }}>
-          Payments History
+          {t('payments history')}
         </List.Item>
       {/*   <List.Item className="p-2" prefix={<SetOutline />} onClick={() => {}}>
           Settings
         </List.Item> */}
-        <List.Item className="p-2" prefix={<TbQuestionMark size={24} />} onClick={() => {}}>
-          Help and Support
+        <List.Item className="p-2" prefix={<TbQuestionMark size={18} />} onClick={() => {Toast.show("support@expressmatka.in")}}>
+          {t('help')}
         </List.Item>
       </List>
       <Divider />
       <List>
         <List.Item
+          arrow={false}
           className="p-2"
           prefix={<UnlockOutline color="red"/>}
           onClick={() => {logOut()}}
         >
-          Logout
+          {t('logout')}
         </List.Item>
       </List>
     </div>

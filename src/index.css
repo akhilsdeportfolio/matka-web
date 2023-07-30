@@ -3,7 +3,7 @@
 @tailwind utilities;
  
 :root {
-    --adm-color-primary: #10B981;
+    --adm-color-primary: #059669;
     --adm-color-success: #00b578;
     --adm-color-warning: #FBBF24;
     --adm-color-danger: #ff3141;
@@ -24,7 +24,7 @@
   }
 
 
-html, body {margin: 0; height: 100%; overflow: hidden}
+html, body {margin: 0; height: 100%; overflow: hidden;}
 
 
 button, [type='button'], [type='reset'], [type='submit']{

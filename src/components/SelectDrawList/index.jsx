@@ -20,6 +20,7 @@ import { Label } from "../Label";
 import { getAmount } from "../../utils/money";
 import { logEvent } from "firebase/analytics";
 import { addDrawId } from "../../features/draws";
+import { useTranslation } from "react-i18next";
 
 export default function SelectDrawList() {
   const { data, isLoading } = useGetAllGamesQuery();
@@ -30,7 +31,7 @@ export default function SelectDrawList() {
   const [callPlaceBet] = usePlacebetMutation();
   const dispatch=useDispatch();
   const draws= useSelector((store)=>store.draws);
-
+  const {t}=useTranslation();
   
 
   useEffect(() => {
@@ -69,7 +70,7 @@ export default function SelectDrawList() {
               content: (
                 <>
                   <div className="text-sm p-2">
-                    Insufficient funds add amount and try again.
+                    {t('insufficient')}
                   </div>
                 </>
               ),
@@ -89,11 +90,11 @@ export default function SelectDrawList() {
                   }}
                 />
               ),
-              title: "Slect a Draw to proceed",
-              confirmText: "Close",
+              title: t('selectDraw'),
+              confirmText: t('Close'),
               content: (
                 <>
-                  <div className="text-sm p-2">You have not selected draw.</div>
+                  <div className="text-sm p-2">{t('noDraw')}</div>
                 </>
               ),
               onConfirm: () => {
@@ -103,7 +104,7 @@ export default function SelectDrawList() {
           }
         }
         if (resp.data) {
-          logEvent(analytics, "purchase", { amount: getAmount(lines) });
+          logEvent(analytics, "purchase", { amount: getAmount(lines),...lines });
           navigate(`/success/${resp.data._id}`);
         }
       })
@@ -125,8 +126,9 @@ export default function SelectDrawList() {
         className="bg-emerald-500 text-white"
         right={
           <>
-            <Button
+            <Button            
               type="ghost"
+              shape="rounded"
               color="warning"
               className="font-bold text-black"
               size="small"
@@ -134,12 +136,12 @@ export default function SelectDrawList() {
                 navigate("/deposit");
               }}
             >
-              Deposit
+              {t('deposit')}
             </Button>
           </>
         }
       >
-        Select Draw
+        {t('select draw')}
       </NavBar>
       <div className="p-2">
         <SearchBar placeholder="Enter a game name" onChange={handleSearch} />
@@ -147,7 +149,7 @@ export default function SelectDrawList() {
 
       <div style={{ maxHeight: "82vh", overflow: "scroll" }}>
         <div className="px-4">
-          <Label title="Available Games to Play" />
+          <Label title={t("Available Games to Play")} />
         </div>
         <CheckList
           onChange={(value)=>{            
@@ -174,7 +176,7 @@ export default function SelectDrawList() {
 
       <BottomBar
         primary={handleConfirm}
-        primaryText="Confirm"
+        primaryText={t("Confirm")}
         disableSecondary
         isLoading={loading}
       />

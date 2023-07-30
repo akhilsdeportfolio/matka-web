@@ -3,9 +3,11 @@ import { List } from "antd-mobile";
 import { formatMoney } from "../../../utils/money";
 import moment from "moment/moment";
 import { ClockCircleOutline, BankcardOutline } from "antd-mobile-icons";
+import { useTranslation } from "react-i18next";
 
 export default function TransactionListItem(props) {
   const { phonePe = null, amount, type, status, createdAt, _id } = props;
+  const {t}=useTranslation();
 
   return (
     <>
@@ -14,7 +16,7 @@ export default function TransactionListItem(props) {
           <div className="flex flex-col items-start">
             <div>
             <p className="text-sm font-bold text-black text-start">
-                {type?.toUpperCase()}
+                {t(type.toLowerCase())}
               </p>
               <p className="text-gray-400" style={{fontSize:'10px'}}>TID : &nbsp;{_id}</p>              
             </div>

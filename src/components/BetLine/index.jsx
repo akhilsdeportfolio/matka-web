@@ -22,6 +22,8 @@ import {
 import { CloseOutline, ExclamationCircleOutline } from "antd-mobile-icons";
 import GameDescription from "../GameDescription";
 import { formatMoney } from "../../utils/money";
+import { useTranslation } from "react-i18next";
+
 
 export default function Betline(props) {
   const { name, stake, drawType, id, isValid } = props;
@@ -31,6 +33,9 @@ export default function Betline(props) {
   const ref = useRef();
   const openRef = useRef();
   const closeRef = useRef();
+  const pannaRef=useRef();
+  const ankRef=useRef();
+  const {t}=useTranslation();
 
   useEffect(() => {
     switch (name) {
@@ -50,7 +55,7 @@ export default function Betline(props) {
         setLength(3);
         break;
       case "half-sangam":
-        setLength(3);
+        setLength(4);
         break;
       case "full-sangam":
         setLength(6);
@@ -61,6 +66,7 @@ export default function Betline(props) {
   }, [name]);
 
   function getValue(type) {
+
     switch (name) {
       case "ank":
         const { ank } = props;
@@ -79,8 +85,12 @@ export default function Betline(props) {
         const { numbers: tp } = props;
         return tp.join("");
       case "half-sangam":
-        const { numbers: hs } = props;
-        return hs.join("");
+        const { numbers: hs,ank:an} = props;
+        if(type==='numbers') 
+          return hs.join("");
+        if(type==='ank')
+          return an.join("");
+          break;
       case "full-sangam":
         const { openNumbers, closeNumbers } = props;
         if (type === "open") return openNumbers?.join("");
@@ -99,20 +109,21 @@ export default function Betline(props) {
           }}
         />
       }
-      title={String(name).toUpperCase()}
-      className="mt-4 mb-4 shadow-lg mx-2 bg-white border-2 border-emerald-200"
+      title={t(name?.replace("-"," "))}
+      className="mt-4 mb-4 shadow-xl mx-2 bg-white"
     >
       {!isValid && (
         <NoticeBar
           icon={<ExclamationCircleOutline />}
-          content={"This is not a valid Bet please check the digits"}
+          content={t('inValidBetMessage')}
           color="alert"
         />
       )}
       <GameDescription type={name} />
       <div className="flex justify-center">
-        {name !== "full-sangam" && (
+        {name !== "half-sangam" && name !== "full-sangam" && (
           <PasscodeInput
+            seperated
             ref={ref}
             error={!isValid}
             onFill={() => {
@@ -145,6 +156,56 @@ export default function Betline(props) {
               dispatch(updateValue({ updateKey: key, updateValue: value, id }));
             }}
           />
+        )}
+
+        {name === "half-sangam" && (
+          <Space direction="horizontal">
+            <PasscodeInput
+              ref={pannaRef}
+              error={!isValid}
+              onFill={() => {
+                pannaRef.current.blur();              
+                ankRef.current.focus()
+                dispatch(validate({ id }));
+              }}
+              style={{
+                "--cell-size": "48px",
+                fontWeight: "bold",
+              }}
+              plain
+              value={getValue(type==='open'?'numbers':'ank')}
+              length={type==='open'?3:1}
+              onChange={(value) => {
+                let key = type==='open'?"numbers":"ank";
+                // setValue(value);
+                dispatch(
+                  updateValue({ updateKey: key, updateValue: value, id })
+                );
+              }}
+            />
+            <PasscodeInput
+              ref={ankRef}
+              error={!isValid}
+              onFill={() => {
+                ankRef.current.blur();        
+                dispatch(validate({ id }));
+              }}
+              style={{
+                "--cell-size": "48px",
+                fontWeight: "bold",
+              }}
+              plain
+              value={getValue(type==='open'?'ank':'numbers')}
+              length={type==='open'?1:3}
+              onChange={(value) => {
+                let key = type==='open'?"ank":"numbers";
+                // setValue(value);
+                dispatch(
+                  updateValue({ updateKey: key, updateValue: value, id })
+                );
+              }}
+            />
+          </Space>
         )}
 
         {name == "full-sangam" && (
@@ -204,30 +265,51 @@ export default function Betline(props) {
       </div>
       {!!drawType && (
         <div className="flex flex-row  p-0 justify-between">
-          <Label title={"Draw Type"}>
+          <Label title={"Draw Type"} >
             <Selector
               style={{ "--padding": "5px 10px" }}
-              options={[
-                {
-                  label: "open",
-                  value: "open",
-                },
-                {
-                  label: "close",
-                  value: "close",
-                },
-              ]}
+              options={
+                (name === "half-sangam" && [
+                  {
+                    label: "close ank",
+                    value: "open",
+                  },
+                  {
+                    label: "open ank",
+                    value: "close",
+                  },
+                ]) || [
+                  {
+                    label: "open",
+                    value: "open",
+                  },
+                  {
+                    label: "close",
+                    value: "close",
+                  },
+                ]
+              }
               defaultValue={["open"]}
               value={type}
               onChange={(arr, extend) => {
-                
-                if(arr.length)
-                {dispatch(
-                  updateDrawType({ drawType: extend.items[0].value, id: id })
-                );
-                setDrawType(extend.items[0].value);}
+                if (arr.length) {
+                  dispatch(
+                    updateDrawType({ drawType: extend.items[0].value, id: id })
+                  );
+                  setDrawType(extend.items[0].value);
+                }
               }}
             />
+            {name === "half-sangam" && drawType === "open" && (
+              <span style={{ fontSize: "10px" }}>
+                Open Panna close Ank (last digit is ank and rest is panna)
+              </span>
+            )}
+            {name === "half-sangam" && drawType === "close" && (
+              <span style={{ fontSize: "10px" }}>
+                Close Panna open Ank (1st digit is ank and rest is panna)
+              </span>
+            )}
           </Label>
         </div>
       )}
@@ -236,36 +318,35 @@ export default function Betline(props) {
         <Label title={"Amount"}>
           <Selector
             style={{ "--padding": "3px 3px" }}
-            options={[              
+            options={[
               {
-                label:formatMoney.format(10),
+                label: formatMoney.format(10),
                 value: "10",
-              },              
+              },
               {
-                label:formatMoney.format(20),
+                label: formatMoney.format(20),
                 value: "20",
-              },                            
+              },
               {
-                label:formatMoney.format(50),
+                label: formatMoney.format(50),
                 value: "50",
               },
               {
-                label:formatMoney.format(100),
+                label: formatMoney.format(100),
                 value: "100",
               },
               {
-                label:formatMoney.format(250),
+                label: formatMoney.format(250),
                 value: "250",
               },
               {
-                label:formatMoney.format(500),
+                label: formatMoney.format(500),
                 value: "500",
               },
               {
-                label:formatMoney.format(1000),
+                label: formatMoney.format(1000),
                 value: "1000",
               },
-              
             ]}
             defaultValue={["100"]}
             value={[String(stake)]}
@@ -278,7 +359,11 @@ export default function Betline(props) {
             }}
           />
         </Label>
-        <Label title={`Max : ${formatMoney.format(10000)}`} textRight style={{ padding: 10 }}>
+        <Label
+          title={`Max : ${formatMoney.format(10000)}`}
+          textRight
+          style={{ padding: 10 }}
+        >
           <Stepper
             min={1}
             max={10000}

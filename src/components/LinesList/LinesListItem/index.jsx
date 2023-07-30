@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
 import { List } from "antd-mobile";
-import React from "react";
-import { formatMoney, getAmount } from "../../../utils/money";
+import { formatMoneyWithDecimals, getAmount } from "../../../utils/money";
+import { useTranslation } from "react-i18next";
 
 export default function LinesListItem(props) {
-  const { name, id, serialNo, stake, winnings } = props;
+  const { name, serialNo, stake, winnings,drawType} = props;
+  const {t}=useTranslation();
 
   function getNumbers() {
     switch (name) {
@@ -18,7 +20,7 @@ export default function LinesListItem(props) {
       case "triple-panna":
         return props["numbers"].join("");
       case "half-sangam":
-        return props["numbers"].join("");
+        return t("panna")+props["numbers"]?.join("")+`, ${t('digits')} : `+(props["ank"]?.join("")||'n/a');
       case "full-sangam":
         return (
           props["openNumbers"].join("") + "," + props["closeNumbers"].join("")
@@ -35,37 +37,40 @@ export default function LinesListItem(props) {
           <p className="text-2xl font-bold  text-gray-300">{serialNo}</p>
         </div>
         <div>
-          <div className="flex flex-col">
+          <div className="flex flex-col justify-start">
             <div>
               <p className="text-xs  text-black font-bold">
-                {String(name).toUpperCase()}
+                {t(name.replace("-"," "))}
               </p>
             </div>
             <div>
-              <p className="text-xs  text-gray-400">Your Number's</p>
+              <p className="text-xs  text-gray-400" style={{fontSize:'10px'}}>{name==='half-sangam'&&drawType==='open' && t("Open Panna Close Ank")}</p>
+              <p className="text-xs  text-gray-400" style={{fontSize:'10px'}}>{name==='half-sangam'&&drawType==='close' && t("Close Panna Open Ank")}</p>
+              <p className="text-xs  text-gray-400">{drawType && name!=='half-sangam'&& t('betType')+ drawType}</p>
             </div>
             <div>
-              <p className="text-xs  text-gray-400">[{getNumbers()}]</p>
+              {name !=='half-sangam' &&<p className="text-xs  text-gray-400">{t('numbers')} : [{getNumbers()}]</p>}
+              {name =='half-sangam' &&<p className="text-xs  text-gray-400">{getNumbers()}</p>}
             </div>
           </div>
         </div>
         <div className="flex flex-col">
           <div>
-            <p className="text-xs font-bold  text-black">Stake</p>
+            <p className="text-xs font-bold  text-black">{t('stake')}</p>
           </div>
           <div>
             <p className="text-xs  text-gray-400">
-              {formatMoney.format(stake)}
+              {formatMoneyWithDecimals.format(stake)}
             </p>
           </div>
         </div>
         <div className="flex flex-col">
           <div>
-            <p className="text-xs  text-black font-bold">Winnings</p>
+            <p className="text-xs  text-black font-bold">{t('winnings')}</p>
           </div>
           <div>
             <p className="text-xs  text-gray-400">
-              {formatMoney.format(getAmount(winnings))}
+              {formatMoneyWithDecimals.format(getAmount(winnings))}
             </p>
           </div>
         </div>

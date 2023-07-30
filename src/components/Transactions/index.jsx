@@ -4,9 +4,11 @@ import { DotLoading, List, NavBar, SpinLoading } from "antd-mobile";
 import { useNavigate } from "react-router-dom";
 import TransactionListItem from "./TransactionListItem";
 import { data } from "autoprefixer";
+import { useTranslation } from "react-i18next";
 
 export default function TransactionsList() {
   const [callApi, { isLoading, ...rest }] = useGetAllTransactionsMutation();
+  const {t}=useTranslation();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
 
@@ -24,7 +26,7 @@ export default function TransactionsList() {
           navigate(-1);
         }}
       >
-        Transactions
+        {t('transactions')}
       </NavBar>
       {isLoading && <SpinLoading color="primary" className="text-center w-auto m-1/2" />}
       <div className="p-2 overflow-auto text-center" style={{maxHeight:'95vh',minHeight:'90vh'}}>        

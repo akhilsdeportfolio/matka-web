@@ -16,6 +16,8 @@ import { logEvent } from "firebase/analytics";
 import { formatMoney, getAmount } from "../../utils/money";
 import { GiftOutline } from "antd-mobile-icons";
 import { winnings } from "../GameDescription";
+import { useTranslation } from "react-i18next";
+import i18n from "../../../i18next";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -24,20 +26,24 @@ export default function Home() {
   const [value, setValue] = useState("");
   const ref = useRef();
   const navigate = useNavigate();
+  const {t}=useTranslation();
 
+
+  
   const details = winnings.map(function (el) {
     if (el.name !== "Rate Card") {
       return {
-        label: el.name.toUpperCase(),
+        label: t(el.name.replace('-'," ")),
         value: String(el.factor) + " X",
       };
     } else {
       return {
-        label: el.name.toUpperCase(),
+        label: t(el.name),
         value: String(el.factor),
       };
     }
   });
+  
 
   useEffect(() => {
     if (localStorage.getItem(linesKey))
@@ -117,7 +123,8 @@ export default function Home() {
             name: value,
             stake: 20,
             numbers: [],
-            drawType: "",
+            ank:[],
+            drawType: "open",
             id: shortid.generate(),
             isValid: false,
           })
@@ -170,7 +177,7 @@ export default function Home() {
           }
           ref={ref}
         >
-          <Dropdown.Item key="text" title="Add Bets" highlight>
+          <Dropdown.Item key="text" title={t('addBet')} highlight>
             <div
               className="text-right"
               style={{ padding: 12, display: "flex" }}
@@ -186,25 +193,25 @@ export default function Home() {
               >
                 <Space direction="vertical" block>
                   <Radio block value="ank">
-                    Ank
+                  {t("ank")}
                   </Radio>
                   <Radio block value="jodi">
-                    Jodi
+                  {t("jodi")}
                   </Radio>
                   <Radio block value="single-panna">
-                    Single Panna
+                  {t("single panna")}
                   </Radio>
                   <Radio block value="double-panna">
-                    Double Panna
+                  {t("double panna")}
                   </Radio>
                   <Radio block value="triple-panna">
-                    Triple Panna
+                  {t("triple panna")}
                   </Radio>
                   <Radio block value="half-sangam">
-                    Half Sangam
+                  {t("half sangam")}
                   </Radio>
                   <Radio block value="full-sangam">
-                    Full Sangam
+                    {t("full sangam")}
                   </Radio>
                 </Space>
               </Radio.Group>
@@ -215,15 +222,14 @@ export default function Home() {
 
       {lines.length === 0 && (
         <ResultPage
+          className="custom"
           details={details}
           icon={<GiftOutline />}
           status="success"
-          title={`Play now and win ${formatMoney.format(100000)}`}
-          description={`Guess numbers and win upto ${formatMoney.format(
-            100000
-          )} every hour`}
-          primaryButtonText="Play Jodi"
-          secondaryButtonText="Play Ank"
+          title={t("winMessage")+` ${formatMoney.format(100000)}`}
+          description={t("winDescription")}
+          primaryButtonText={t('play')+' '+t('jodi')}
+         /*  secondaryButtonText="Play Ank" */
           onPrimaryButtonClick={() => {
             updateSelected("jodi");
           }}
@@ -256,7 +262,7 @@ export default function Home() {
         primary={handlePickDraw}
         secondary={handleQuickDraw}
         isLoading={loading}
-        primaryText="Pick Draw"
+        primaryText={t("pickDraw")}
         /* secondaryText="Quick Draw" */
       />
     </div>
