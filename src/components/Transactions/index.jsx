@@ -21,7 +21,8 @@ export default function TransactionsList() {
   return (
     <div>
       <NavBar
-        className="bg-emerald-500 text-white"
+        style={{backgroundColor:"lightseagreen"}}
+        className= "text-white"
         onBack={() => {
           navigate(-1);
         }}

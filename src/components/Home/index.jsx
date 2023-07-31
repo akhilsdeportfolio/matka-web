@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AddCircleOutline } from "antd-mobile-icons";
 import { addBetline, addBetLines } from "../../features/betlines";
-import { Dropdown, Radio, ResultPage, Space } from "antd-mobile";
+import { Dropdown, List, Radio, ResultPage, Space } from "antd-mobile";
 import Betline from "../BetLine";
 import shortid from "shortid";
 import { linesKey } from "../../const";
@@ -18,6 +18,7 @@ import { GiftOutline } from "antd-mobile-icons";
 import { winnings } from "../GameDescription";
 import { useTranslation } from "react-i18next";
 import i18n from "../../../i18next";
+import SecurePayments from "../SecurePayments";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -160,11 +161,11 @@ export default function Home() {
   }
 
   return (
-    <div style={{ padding: 0 }}>
+    <div style={{ padding: 0}}>
       <div
         style={{
           display: "flex",
-          flexDirection: "row-reverse",
+          flexDirection: "row",
           justifyContent: "space-between",
         }}
       >
@@ -172,12 +173,12 @@ export default function Home() {
           arrow={
             <AddCircleOutline
               fontSize={16}
-              style={{ color: "var(--adm-color-primary)" }}
+              style={{ color: "black" }}//var(--adm-color-primary)
             />
           }
           ref={ref}
         >
-          <Dropdown.Item key="text" title={t('addBet')} highlight>
+          <Dropdown.Item key="text" title={t('addBet')} style={{color:'black'}}>
             <div
               className="text-right"
               style={{ padding: 12, display: "flex" }}
@@ -224,10 +225,10 @@ export default function Home() {
         <ResultPage
           className="custom"
           details={details}
-          icon={<GiftOutline />}
+          icon={<></>}
           status="success"
           title={t("winMessage")+` ${formatMoney.format(100000)}`}
-          description={t("winDescription")}
+          description={t("winDescription")}          
           primaryButtonText={t('play')+' '+t('jodi')}
          /*  secondaryButtonText="Play Ank" */
           onPrimaryButtonClick={() => {
@@ -236,9 +237,11 @@ export default function Home() {
           onSecondaryButtonClick={() => {
             updateSelected("ank");
           }}
-        />
+        >          
+      </ResultPage>    
       )}
       <div>
+        <List>
         {lines.map((el, index) => {
           return (
             <Betline
@@ -257,14 +260,15 @@ export default function Home() {
             />
           );
         })}
-      </div>
+        </List>
+      </div>      
       <BottomBar
         primary={handlePickDraw}
         secondary={handleQuickDraw}
         isLoading={loading}
         primaryText={t("pickDraw")}
         /* secondaryText="Quick Draw" */
-      />
+      />      
     </div>
   );
 }

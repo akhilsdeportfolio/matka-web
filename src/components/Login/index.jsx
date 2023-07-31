@@ -1,18 +1,14 @@
 import { useState } from "react";
 import "./index.css";
-import {
-  Button,
-  Card,  
-  Form,
-  Input,
-  NoticeBar,  
-} from "antd-mobile";
+import { Button, Card, Form, Input, NoticeBar } from "antd-mobile";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../clientFirebase";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Navbar from "../Navbar";
-import { TbLockAccess } from "react-icons/tb";
+import { TbBrandFacebook, TbBrandGoogle, TbLockAccess } from "react-icons/tb";
+import { FacebookLoginButton, GoogleLoginButton, TwitterLoginButton, createButton } from "react-social-login-buttons";
+import SecurePayments from "../SecurePayments";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -20,9 +16,9 @@ export default function Login() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [form] = Form.useForm();  
+  const [form] = Form.useForm();
   const { t } = useTranslation();
-
+  
   async function handleLogin() {
     setLoading(true);
     try {
@@ -39,19 +35,16 @@ export default function Login() {
     <>
       <Navbar />
       <div className="loginContainer">
-        <Card
-          style={{ padding: 20 }}
-          className="drop-shadow-2xl"
-        >
+        <Card style={{ padding: 20 }} className="drop-shadow-2xl">
           <img
             src="logo.png"
             width="160"
             height="100"
             style={{ margin: "auto" }}
           />
-          <p className="text-xl mb-2 mt-4">{t('login')}</p>
+          <p className="text-xl mb-2 mt-4">{t("login")}</p>
           <p className="text-xs mb-2">{t("Please Login to continue")}</p>
-          <Form form={form} onFinish={handleLogin}>
+           <Form form={form} onFinish={handleLogin}>
             <Form.Item
               label={t("Email Address")}
               name="email"
@@ -62,7 +55,7 @@ export default function Login() {
             >
               <Input
                 className="bg-slate-100  p-2 border border-blue-200 rounded-md"
-                placeholder={t('enter email')}
+                placeholder={t("enter email")}
                 value={email}
                 onChange={(e) => setEmail(e)}
               />
@@ -74,7 +67,7 @@ export default function Login() {
             >
               <Input
                 className="bg-slate-100 p-2 border border-blue-200 rounded-md"
-                placeholder={t('enter password')}
+                placeholder={t("enter password")}
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e)}
@@ -103,20 +96,22 @@ export default function Login() {
               type="ghost"
             >
               {t("proceed to login")}
-            </Button>
-          </Form>
+            </Button>            
+            
+          </Form> */          
           <div className="p-2">
             <Link to={"/signup"} className="text-slate-600 font-bold">
-              {t('noAccount')}
-              <span className="text-blue-400"> {t('signup')}</span>
+              {t("noAccount")}
+              <span className="text-blue-400"> {t("signup")}</span>
             </Link>
             <div className="mt-2" />
             <Link to={"/forgot"} className="text-slate-600 font-bold">
-              {t('forgotPassword')}
+              {t("forgotPassword")}
             </Link>
           </div>
-        </Card>
+        </Card>        
       </div>
+      <SecurePayments/>
     </>
   );
 }

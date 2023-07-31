@@ -12,7 +12,8 @@ export default function BetAccepted() {
       <NavBar
         back={false}
         backArrow={false}
-        className="bg-emerald-600 text-white"
+        className=" text-white"
+        style={{backgroundColor:"lightseagreen"}}
       />
       <ResultPage
         icon={<ClockCircleOutline/>}

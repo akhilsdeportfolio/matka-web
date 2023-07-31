@@ -9,6 +9,7 @@ import {
   parsePhoneNumber,
 } from "libphonenumber-js";
 import { useTranslation } from "react-i18next";
+import SecurePayments from "../SecurePayments";
 
 export default function WithDraw() {
   const navigate = useNavigate();
@@ -76,7 +77,8 @@ export default function WithDraw() {
         onBack={() => {
           navigate(-1);
         }}
-        className="bg-emerald-500 text-white"
+        className=" text-white"
+        style={{backgroundColor:"lightseagreen"}}
       >
         {t('withdraw')}
       </NavBar>
@@ -172,8 +174,7 @@ export default function WithDraw() {
         <div className="p-4">
           <Button
             type="ghost"
-            color="success"
-            size="large"
+            color="primary"            
             block
             className="text-white font-bold"
             loading={loading}
@@ -186,6 +187,7 @@ export default function WithDraw() {
           <div className="p-2" />
         </div>
       </Form>
+      <SecurePayments/>
     </>
   );
 }

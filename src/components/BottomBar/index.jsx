@@ -22,7 +22,7 @@ export default function BottomBar({
   return (
     <div
       style={{ position: "absolute", bottom: 0, minWidth: "100%" }}
-      className="bg-amber-300 p-2"
+      className="bg-amber-400 p-2 px-3 py-2"
     >
       <div className="flex flex-row justify-between items-center	">
         <div>
@@ -32,10 +32,11 @@ export default function BottomBar({
         </div>
         <Space direction="horizontal" className="align-middle">
           <Button
-            size="small"
+            size="small"            
             color="primary"
             className="font-bold"
             disabled={disabled}
+            shape="rounded"
             onClick={() => {
               primary();
             }}
@@ -46,7 +47,8 @@ export default function BottomBar({
           {!disableSecondary && (
             <Button
               size="small"
-              color="primary"
+              shape="rounded"              
+              color="primary"              
               className="font-bold"
               disabled={disabled}
               loading={isLoading}

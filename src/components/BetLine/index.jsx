@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { Label } from "../Label";
 import { useDispatch } from "react-redux";
 import {
+  addBetline,
   removeBetLine,
   updateDrawType,
   updateStake,
@@ -23,6 +24,9 @@ import { CloseOutline, ExclamationCircleOutline } from "antd-mobile-icons";
 import GameDescription from "../GameDescription";
 import { formatMoney } from "../../utils/money";
 import { useTranslation } from "react-i18next";
+import { TbCopy } from "react-icons/tb";
+import shortid from "shortid";
+import { MdCopyAll, MdDelete } from "react-icons/md";
 
 
 export default function Betline(props) {
@@ -65,6 +69,96 @@ export default function Betline(props) {
     }
   }, [name]);
 
+
+  function updateSelected(value) {
+    switch (value) {
+      case "ank":
+        dispatch(
+          addBetline({
+            name: value,
+            stake: 20,
+            ank: [""],
+            drawType: "open",
+            id: shortid.generate(),
+            isValid: false,
+          })
+        );
+        break;
+      case "jodi":
+        dispatch(
+          addBetline({
+            name: value,
+            stake: 20,
+            jodi: [""],
+            id: shortid.generate(),
+            isValid: false,
+          })
+        );
+        break;
+      case "single-panna":
+        dispatch(
+          addBetline({
+            name: value,
+            stake: 20,
+            numbers: [],
+            drawType: "open",
+            id: shortid.generate(),
+            isValid: false,
+          })
+        );
+        break;
+      case "double-panna":
+        dispatch(
+          addBetline({
+            name: value,
+            stake: 20,
+            numbers: [],
+            drawType: "open",
+            id: shortid.generate(),
+            isValid: false,
+          })
+        );
+        break;
+      case "triple-panna":
+        dispatch(
+          addBetline({
+            name: value,
+            stake: 20,
+            numbers: [],
+            drawType: "open",
+            id: shortid.generate(),
+            isValid: false,
+          })
+        );
+        break;
+      case "half-sangam":
+        dispatch(
+          addBetline({
+            name: value,
+            stake: 20,
+            numbers: [],
+            ank:[],
+            drawType: "open",
+            id: shortid.generate(),
+            isValid: false,
+          })
+        );
+        break;
+      case "full-sangam":
+        dispatch(
+          addBetline({
+            name: value,
+            stake: 20,
+            openNumbers: [],
+            closeNumbers: [],
+            id: shortid.generate(),
+            isValid: false,
+          })
+        );
+        break;
+    }
+  }
+
   function getValue(type) {
 
     switch (name) {
@@ -100,17 +194,32 @@ export default function Betline(props) {
     }
   }
 
-  return (
-    <Card
-      extra={
-        <CloseOutline
+
+  function ExtraActions()
+  {
+    return (<>
+      <div className="flex flex-row">
+      <MdCopyAll
+      className="mr-4"
+          onClick={() => {
+            updateSelected(name)
+          }}
+        />
+      <MdDelete
           onClick={() => {
             dispatch(removeBetLine({ id }));
           }}
         />
+      </div>
+    </>)
+  }
+  return (
+    <Card
+      extra={
+        <ExtraActions/>
       }
       title={t(name?.replace("-"," "))}
-      className="mt-4 mb-4 shadow-xl mx-2 bg-white"
+      className="mt-4 mb-4 mx-1 bg-white border"
     >
       {!isValid && (
         <NoticeBar
@@ -131,7 +240,7 @@ export default function Betline(props) {
               dispatch(validate({ id }));
             }}
             style={{
-              "--cell-size": "48px",
+              "--cell-size": "36px",
               fontWeight: "bold",
             }}
             plain
@@ -169,7 +278,7 @@ export default function Betline(props) {
                 dispatch(validate({ id }));
               }}
               style={{
-                "--cell-size": "48px",
+                "--cell-size": "36px",
                 fontWeight: "bold",
               }}
               plain
@@ -191,7 +300,7 @@ export default function Betline(props) {
                 dispatch(validate({ id }));
               }}
               style={{
-                "--cell-size": "48px",
+                "--cell-size": "36px",
                 fontWeight: "bold",
               }}
               plain
@@ -217,7 +326,7 @@ export default function Betline(props) {
                 closeRef.current.focus();
               }}
               style={{
-                "--cell-size": "48px",
+                "--cell-size": "36px",
                 fontWeight: "bold",
               }}
               plain
@@ -244,7 +353,7 @@ export default function Betline(props) {
                 dispatch(validate({ id }));
               }}
               style={{
-                "--cell-size": "48px",
+                "--cell-size": "36px",
                 fontWeight: "bold",
               }}
               plain
@@ -317,7 +426,7 @@ export default function Betline(props) {
       <div className="flex flex-row justify-between">
         <Label title={"Amount"}>
           <Selector
-            style={{ "--padding": "3px 3px" }}
+            style={{ "--padding": "5px 10px"}}
             options={[
               {
                 label: formatMoney.format(10),
@@ -338,15 +447,7 @@ export default function Betline(props) {
               {
                 label: formatMoney.format(250),
                 value: "250",
-              },
-              {
-                label: formatMoney.format(500),
-                value: "500",
-              },
-              {
-                label: formatMoney.format(1000),
-                value: "1000",
-              },
+              },              
             ]}
             defaultValue={["100"]}
             value={[String(stake)]}
@@ -360,13 +461,13 @@ export default function Betline(props) {
           />
         </Label>
         <Label
-          title={`Max : ${formatMoney.format(10000)}`}
+          title={`Max : ${formatMoney.format(2500)}`}
           textRight
           style={{ padding: 10 }}
         >
           <Stepper
             min={1}
-            max={10000}
+            max={2500}
             value={stake}
             onChange={(value) =>
               dispatch(updateStake({ stake: value, id: id }))

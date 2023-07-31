@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { paymentCreated } from "../../features/payments";
 import { formatMoney } from "../../utils/money";
 import { useTranslation } from "react-i18next";
+import SecurePayments from "../SecurePayments";
 
 export default function Deposit() {
   const navigate = useNavigate();
@@ -27,7 +28,8 @@ export default function Deposit() {
         onBack={() => {
           navigate(-1);
         }}
-        className="bg-emerald-500 text-white"
+        className="text-white"
+        style={{backgroundColor:'lightseagreen'}}
       >
         {t('deposit')}
       </NavBar>      
@@ -130,8 +132,7 @@ export default function Deposit() {
         <div className="p-4">
           <Button
             type="ghost"
-            color="success"
-            size="large"
+            color="primary"            
             block
             className="text-white font-bold"
             loading={loading}
@@ -143,6 +144,7 @@ export default function Deposit() {
           </Button>
         </div>
       </Form>              
+      <SecurePayments/>
     </>
   );
 }

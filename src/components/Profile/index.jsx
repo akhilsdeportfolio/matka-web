@@ -2,13 +2,11 @@ import { Button,Divider, List, Toast } from "antd-mobile";
 import { useSelector } from "react-redux";
 import { formatMoneyWithDecimals } from "../../utils/money";
 import {useAuth} from '../../context/Auth/AuthContext';
-import {  
-  UnlockOutline
-} from "antd-mobile-icons";
 import "./styles.css";
-import { TbCashBanknote, TbCurrencyRupee, TbQuestionMark} from "react-icons/tb";
+import { TbCashBanknote, TbCurrencyRupee, TbLogout, TbQuestionMark} from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import SecurePayments from "../SecurePayments";
 
 export default function Profile() {
   const balance = useSelector((store) => store.user.balance / 100);
@@ -52,14 +50,7 @@ export default function Profile() {
       </div>
 
       <Divider />
-      <List >
-        {/* <List.Item
-          className="p-2"
-          prefix={<InformationCircleOutline />}
-          onClick={() => {}}
-        >
-          Personal Data
-        </List.Item> */}
+      <List >      
         {/* <List.Item
           className="p-2"
           prefix={<UserCircleOutline />}
@@ -84,12 +75,13 @@ export default function Profile() {
         <List.Item
           arrow={false}
           className="p-2"
-          prefix={<UnlockOutline color="red"/>}
+          prefix={<TbLogout color="red"/>}
           onClick={() => {logOut()}}
         >
           {t('logout')}
         </List.Item>
       </List>
+      <SecurePayments/>
     </div>
   );
 }
