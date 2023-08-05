@@ -164,7 +164,7 @@ export default function Dashboard() {
           <AppBar />
         </div>
         <div
-          style={{ minHeight: "80vh", maxHeight: "80vh", overflow: "scroll" }}
+          style={{ minHeight: "60vh", maxHeight: "75vh", overflow: "scroll" }}
         >
           <Outlet />
         </div>

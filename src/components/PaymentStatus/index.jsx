@@ -1,12 +1,13 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {  usePhonePeCheckStautsQuery } from "../../features/api/apiSlice";
-import { Button, Card, Input, ResultPage, SpinLoading } from "antd-mobile";
+import { Card, ResultPage, SpinLoading } from "antd-mobile";
 import Countdown, { zeroPad } from "react-countdown";
 import moment from "moment";
 import { formatMoneyWithDecimals } from "../../utils/money";
 import "./index.css";
 import { useSelector } from "react-redux";
 import {SiPhonepe,SiPaytm,SiGooglepay,SiAmazonpay} from 'react-icons/si'
+import SecurePayments from "../SecurePayments";
 
 export default function PaymentsStatus() {
   const { id } = useParams();
@@ -29,6 +30,7 @@ export default function PaymentsStatus() {
   } 
 
   return (
+    <>
     <div>
       {data?.code === "PAYMENT_SUCCESS" && (
         <ResultPage
@@ -60,30 +62,29 @@ export default function PaymentsStatus() {
                 {formatMoneyWithDecimals.format(payments?.amount)}
               </span>
               <br />
-              <span className="text-center text-weight text-xs">
+              <span className="text-center text-weight text-xs mr-2">
                 Payment Request Expires in
-              </span>
-              <br />
+              </span>              
               <Countdown
                 renderer={({ minutes, seconds }) => (
-                  <span className="text-xl counter text-center text-white">
+                  <span className="text-sm counter text-center text-white">
                     {zeroPad(minutes)}:{zeroPad(seconds)}
                   </span>
                 )}
                 daysInHours
-                date={moment().add("8", "minutes").toDate()}
+                date={moment().add("5", "minutes").toDate()}
                 intervalDelay={0}
                 precision={3}
               />
             </>
           }
         >
-          <Card style={{ marginTop: 12 }}>
+          <Card style={{ marginTop: 12 ,marginBottom:30}}>
             <div className="mx-auto w-1/2 text-center max-w-fit">
               <img
                 src={`data:image/png;base64,${payments?.instrumentResponse?.qrData}`}
-                width={150}
-                height={150}
+                width={200}
+                height={200}
               />
               <a
                 className="text-center"
@@ -93,7 +94,7 @@ export default function PaymentsStatus() {
                 Download
               </a>
             </div>
-            <p className="font-bold text-sm text-center p-4 ">Pay using QR or Pay using UPI apps</p>
+            <p className="font-bold text-sm text-center p-4 ">Pay using QR with Screenshot / Pay using UPI apps by clicking on below icons</p>
             <div className="flex flex-row justify-evenly items-center max-w-full">
               <div>
                 <Link
@@ -132,10 +133,13 @@ export default function PaymentsStatus() {
               <p className="p-2 ">
                 Please don&apos;t close the window or press back{" "}
               </p>
-            </div>
-          </Card>
+            </div>            
+          </Card>         
+          <SecurePayments/> 
         </ResultPage>
       )}
-    </div>
+      
+    </div>    
+    </>
   );
 }

@@ -1,38 +1,35 @@
-import { DotLoading, Dropdown, List, Radio, Result, Space, SpinLoading } from "antd-mobile";
+import { Dropdown, List, Radio, Result, SearchBar, Space, SpinLoading } from "antd-mobile";
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
-import { drawNames } from "../../const";
 import ResultItem from "./ResultItem";
 import { useGetGameResultsMutation } from "../../features/api/apiSlice";
 
 export default function Results() {
   const today = moment().format("DD-MM-YYYY");
   const dates = [];
-  const [selected, setSelected] = useState(drawNames[0]);
   const [date, setDate] = useState(today);
   const [call,apiResult] = useGetGameResultsMutation();
-  const ref = useRef();
-  const ref2 = useRef();
+  const ref = useRef();  
   const [gameResults, setGameResults] = useState([]);
+  const [copy, setCopy] = useState([]);
 
-  for (let i = 0; i <= 15; i++) {
+  for (let i = 0; i <= 7; i++) {
     const date = moment(today, "DD-MM-YYYY").add(-i, "d").format("DD-MM-YYYY");
     dates.push(date);
   }
 
-  useEffect(() => {
-    call({ game: selected, date }).then((resp) => {
-      if (!resp.error) setGameResults(resp.data.games);
-    });
-  }, []);
+  
 
   useEffect(() => {
-    ref?.current?.close();
-    ref2?.current?.close();
-    call({ game: selected, date }).then((resp) => {
+    ref?.current?.close();    
+    call({ date }).then((resp) => {
       if (!resp.error) setGameResults(resp.data.games);
     });
-  }, [selected, date]);
+  }, [date]);
+
+  useEffect(()=>{
+    setCopy(gameResults)
+  },[gameResults])
 
 
 
@@ -43,33 +40,24 @@ export default function Results() {
     </div>
   }
 
+  function handleSearch(value) {    
+    const d = gameResults.filter((game) => {
+      if (game.productName.toLowerCase().includes(value.toLowerCase())) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    setCopy(d);
+  }
+
   return (
     <>
-      <div className="flex flex-row justify-between">
-        <Dropdown ref={ref}>
-          <Dropdown.Item key="gameName" title={selected} highlight>
-            <div style={{ padding: 12 }}>
-              <Radio.Group
-                defaultValue={selected}
-                onChange={(vlaue) => {
-                  setSelected(vlaue);
-                }}
-              >
-                <Space direction="vertical" block>
-                  {drawNames.map((name) => {
-                    return (
-                      <Radio key={name} block value={name}>
-                        {name}
-                      </Radio>
-                    );
-                  })}
-                </Space>
-              </Radio.Group>
-            </div>
-          </Dropdown.Item>
-        </Dropdown>
-
-        <Dropdown ref={ref2}>
+      <div className="p-2">
+        <SearchBar placeholder="Enter a game name" onChange={handleSearch} />
+      </div>
+      <div className="flex flex-row justify-start items-center">      
+        <p className="px-2 text-sm font-bold">Date : </p><Dropdown ref={ref}>
           <Dropdown.Item key="gameDate" title={date} highlight>
             <div style={{ padding: 12, overflow: "scroll" }}>
               <Radio.Group
@@ -100,8 +88,10 @@ export default function Results() {
           description="Game data is not available may be because there was no game on this day on this platform"
         />
       )}
+
+      
       <List>
-        {gameResults?.map((game) => (
+        {copy?.map((game) => (
           <ResultItem game={game} key={game._id} />
         ))}
       </List>

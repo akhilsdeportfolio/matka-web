@@ -15,7 +15,8 @@ export default function BetDetails() {
   return (
     <div >
       <NavBar
-        className="bg-emerald-500 text-white"
+        style={{backgroundColor:'lightseagreen'}}
+        className="text-white"
         onBack={() => {
           navigate(-1);
         }}
@@ -29,7 +30,7 @@ export default function BetDetails() {
         <BetDetailsHeader {...betDetails}/>       
 
         <p className="font-bold text-gray-400 mt-2 text-sm">Bet Lines</p>
-        <div style={{overflow:'hidden',overflowY:'scroll',maxHeight:'70vh'}}>
+        <div style={{overflowY:'scroll',maxHeight:'60vh'}}>
         <LinesList lines={betDetails.lines} winnings={betDetails.winningsDivison}/>
         </div> 
       </div>

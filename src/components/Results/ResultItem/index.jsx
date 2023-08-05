@@ -34,8 +34,7 @@ export default function ResultItem({ game ,disableStatus=false}) {
           </p>
           <Form.Item disabled className="bg-transparent">
             <div className="flex flex-row items-center justify-between">
-              <PasscodeInput
-                
+              <PasscodeInput                
                 style={{
                   "--cell-size": "36px",
                   "--border-color": "cornflowerblue",

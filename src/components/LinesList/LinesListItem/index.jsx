@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 import { List } from "antd-mobile";
-import { formatMoneyWithDecimals, getAmount } from "../../../utils/money";
+import { formatMoneyWithDecimals, getAmountByLine } from "../../../utils/money";
 import { useTranslation } from "react-i18next";
 
 export default function LinesListItem(props) {
-  const { name, serialNo, stake, winnings,drawType} = props;
+  
+  const { name, serialNo, stake, winnings,drawType,id} = props;
   const {t}=useTranslation();
 
   function getNumbers() {
@@ -70,7 +71,7 @@ export default function LinesListItem(props) {
           </div>
           <div>
             <p className="text-xs  text-gray-400">
-              {formatMoneyWithDecimals.format(getAmount(winnings))}
+              {formatMoneyWithDecimals.format(getAmountByLine(winnings,id))}
             </p>
           </div>
         </div>
