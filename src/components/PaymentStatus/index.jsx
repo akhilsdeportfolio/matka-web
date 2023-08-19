@@ -12,7 +12,7 @@ import SecurePayments from "../SecurePayments";
 export default function PaymentsStatus() {
   const { id } = useParams();
   const payments = useSelector(store=>store.payments); 
-  const {data ,loading} = usePhonePeCheckStautsQuery(id,{pollingInterval:45000});
+  const {data ,loading} = usePhonePeCheckStautsQuery(id,{pollingInterval:5000});
   const navigate = useNavigate();
 
   const details = [
