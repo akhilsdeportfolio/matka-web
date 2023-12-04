@@ -22,7 +22,7 @@ export const gamesApi = createApi({
     }),
     getUserDataById: builder.mutation({
       query: (uid) => `/users/${uid}`,
-      method: "get",
+      method: "get",      
     }),
     placebet: builder.mutation({
       query: (data) => ({ url: "/bets/createBet", method: "POST", body: data }),

@@ -1,7 +1,6 @@
 import {  NavBar } from "antd-mobile";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import BetItem from "../BetItem";
 import BetDetailsHeader from "./BetDetailsHeader";
 import LinesList from "../../LinesList";
 
